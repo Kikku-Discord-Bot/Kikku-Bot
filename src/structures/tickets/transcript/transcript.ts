@@ -3,7 +3,7 @@ import fs from 'fs';
 import { BaseClient } from '@src/structures/';
 
 async function loadStyles() {
-	const css = fs.readFileSync('./css/transcript.css', 'utf8');
+	const css = fs.readFileSync('./src/structures/tickets/transcript/css/transcript.css', 'utf8');
 	return css;
 }
 
@@ -93,7 +93,7 @@ export default async function buildTranscript(guildId: string, client: BaseClien
 	messages.forEach((message) => {
 		const date = new Date(message.createdTimestamp);
 		const dateFormatted = date.toLocaleDateString()
-		const timeFormatted = date.getHours() + ':' + date.getMinutes();
+		const timeFormatted = (date.getHours().toString().length == 1 ? '0' + date.getHours() : date.getHours())  + ':' + (date.getMinutes().toString().length == 1 ? '0' + date.getMinutes() : date.getMinutes());
 		const GMT = date.getTimezoneOffset() / 60;
 
 		if (message.author.bot) return;
@@ -105,7 +105,7 @@ export default async function buildTranscript(guildId: string, client: BaseClien
 			`<div class='userContent'>`
 			+ `<div class='chatUsername username'>${message.author.username}</div>`
 			+ `<div class='chatUsername userId'>${message.author.tag + ' ' + message.author.id}</div>`
-			+ `<div class='chatTimeStamp'>Today at ${timeFormatted + ` UTC + ${GMT}`}</div>`
+			+ `<div class='chatTimeStamp'>${dateFormatted} at ${timeFormatted + ` UTC + ${GMT}`}</div>`
 			+ `<img class='chatAvatar' src='${message.author.displayAvatarURL({ forceStatic: true})}' alt=${message.author.username}>`
 			+ `</div></div>`
 			+ `<div class='chatContent'>`
