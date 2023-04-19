@@ -1,8 +1,9 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
-import { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Colors, DiscordAPIError } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import { PermissionFlagsBits } from "discord.js";
 import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
+import { Exception } from "@src/structures/exception/Exception.class";
 
 /**
  * @description Unmute slash command
@@ -35,6 +36,7 @@ export class UnmuteSlashCommand extends BaseSlashCommand {
 	 */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
         const memberOption = interaction.options.get('member')
+        const reasonOption = interaction.options.get('reason')
         const guildDB = await GuildHandler.getGuildById(interaction.guild!.id);
 
         if (!memberOption) {
@@ -53,25 +55,38 @@ export class UnmuteSlashCommand extends BaseSlashCommand {
             await interaction.reply('Something went wrong!');
             return;
         };
-
-        const role = interaction.guild.roles.cache.find(r => r.name === 'Muted');
-
-        if (!role) {
-            await interaction.reply('Something went wrong!');
+        if (!member.isCommunicationDisabled()) {
+            await interaction.reply({content: 'This member is not muted! Did you mean another member?', ephemeral: true});
             return;
         };
 
-        if (!member.roles.cache.has(role.id)) {
-            await interaction.reply('This member is not muted!');
+        try {
+            if (reasonOption) {
+                const reason = reasonOption.value as string;
+                if (reason) {
+                    await member.timeout(null, reason);
+                } else {
+                    await member.timeout(null);
+                };
+            } else {
+                await member.timeout(null);
+            }
+        } catch (err: DiscordAPIError | any) {
+            await interaction.reply({content: 'Something went wrong!', ephemeral: true});
+            new Exception(err).logError();
             return;
-        };
-
-        await member.roles.remove(role);
-        if (guildDB?.memberRoleId) {
-            const memberRole = interaction.guild.roles.cache.get(guildDB.memberRoleId);
-            if (memberRole && !member.roles.cache.has(memberRole.id)) await member.roles.add(memberRole);
-        };
-        await interaction.reply(`Successfully unmuted ${member}`);
-
+        }
+        await interaction.reply({embeds: [this.createEmbed(interaction.member as GuildMember, member, reasonOption ? reasonOption?.value as string : "")]});
 	}
+
+    createEmbed(author: GuildMember, target: GuildMember, reason: string) : EmbedBuilder {
+        const embed = new EmbedBuilder()
+            .setDescription(`Unmuted ${target}!`)
+            .setColor(Colors.DarkGrey)
+            .setTimestamp(new Date())
+            .setFooter({text: `Unmuted by ${author.user.tag}`, iconURL: `${author.user.avatarURL()}`})
+        if (reason && reason !== "")
+            embed.addFields({name: 'Reason', value: reason});
+        return embed;
+    }
 }

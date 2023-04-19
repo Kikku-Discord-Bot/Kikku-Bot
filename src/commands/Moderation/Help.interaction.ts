@@ -34,7 +34,9 @@ export class HelpSlashCommand extends BaseSlashCommand {
         };
 
         if (!commandOption) {
-            await interaction.reply(HelpSlashCommand.optionsHelpCommandEmbed(client) as any);
+            let res = HelpSlashCommand.optionsHelpCommandEmbed(client);
+            res.ephemeral = true;
+            await interaction.reply(res);
         } else {
             let command = null;
 
@@ -148,6 +150,6 @@ export class HelpSlashCommand extends BaseSlashCommand {
             .setColor(Colors.DarkButNotBlack)
             .setDescription('Here is a list of all the commands you can use with the bot. You can also use the `help <command>` command to get more information about a specific command.')
         
-	    return { embeds: [mainEmbed, embed], components: [row], ephemeral: true}
+	    return { embeds: [mainEmbed, embed], components: [row]}
     }
 }

@@ -29,7 +29,7 @@ export class InteractionCreatedEvent extends BaseEvent {
 				await command.execute(client, interaction);
 			} catch (error) {
 				console.error(error);
-				await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+				await interaction.reply({ content: `There was an error while executing ${command.getName()} command! Contact Admin`, ephemeral: true });
 			}
 		}
 	}

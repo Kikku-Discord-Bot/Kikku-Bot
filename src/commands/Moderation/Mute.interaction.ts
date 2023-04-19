@@ -1,8 +1,8 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
-import { ChatInputCommandInteraction, Colors, GuildMember, PermissionsBitField, EmbedBuilder, Guild } from "discord.js";
+import { ChatInputCommandInteraction, DiscordAPIError, Colors, GuildMember, PermissionsBitField, EmbedBuilder, Guild } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import { PermissionFlagsBits } from "discord.js";
-import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
+import { Exception } from "@src/structures/exception/Exception.class";
 
 /**
  * @description Mute slash command
@@ -44,7 +44,6 @@ export class MuteSlashCommand extends BaseSlashCommand {
         const timeOption = interaction.options.get('time')
         const reasonOption = interaction.options.get('reason')
         const author = interaction.member as GuildMember;
-        const GuildDB = await GuildHandler.getGuildById(interaction.guild!.id);
 
         if (!memberOption || !timeOption) {
             await interaction.reply('Something went wrong!');
@@ -63,75 +62,31 @@ export class MuteSlashCommand extends BaseSlashCommand {
             await interaction.reply('Something went wrong!');
             return;
         };
-        
-        const role = interaction.guild.roles.cache.find(role => role.name === 'Muted');
-        const memberRoleSetup = GuildDB!.memberRoleId;
-        const roleMember = interaction.guild.roles.cache.find(role => role.id === GuildDB!.memberRoleId);
-        if (!role) {
-            if (!memberRoleSetup || !roleMember) {
-                const permissions = new PermissionsBitField();
-                permissions.remove(PermissionFlagsBits.SendMessages);
-                interaction.guild.roles.create({
-                    name: 'Muted',
-                    color: Colors.DarkGrey,
-                    permissions: []
-                }).then(async role => {
-                    await member.roles.add(role);
-                    setTimeout(async () => {
-                        if (member.roles.cache.has(role.id))
-                            await member.roles.remove(role);
-                    }, time * 1000);
-                });
-            } else {
-                const permissions = new PermissionsBitField();
-                permissions.remove(PermissionFlagsBits.SendMessages);
-                interaction.guild.roles.create({
-                    name: 'Muted',
-                    color: Colors.DarkGrey,
-                    permissions: []
-                }).then(async role => {
-                    await member.roles.remove(GuildDB!.memberRoleId);
-                    await member.roles.add(role);
-                    setTimeout(async () => {
-                        if (member.roles.cache.has(role.id))
-                            await member.roles.remove(role);
-                        if (!member.roles.cache.has(GuildDB!.memberRoleId))
-                            await member.roles.add(GuildDB!.memberRoleId);
-                    }, time * 1000);
-                });
-            }
-        } else {
-            if (!memberRoleSetup || !roleMember) {
-                await member.roles.add(role);
-                setTimeout(async () => {
-                    if (member.roles.cache.has(role.id))
-                        await member.roles.remove(role);
-                }, time * 1000);
-            } else {
-                await member.roles.add(role);
-                await member.roles.remove(GuildDB!.memberRoleId);
-                setTimeout(async () => {
-                    if (member.roles.cache.has(role.id))
-                        await member.roles.remove(role);
-                    if (!member.roles.cache.has(GuildDB!.memberRoleId))
-                        await member.roles.add(GuildDB!.memberRoleId);
-                }, time * 1000);
-            };
+
+        if (member.isCommunicationDisabled()) {
+            await interaction.reply({ content: 'This member is already muted! Did you mean another member?', ephemeral: true});
+            return;
         };
-        const everyoneRole = interaction.guild.roles.everyone;
-        if (everyoneRole.permissions.has(PermissionFlagsBits.SendMessages)) {
-            await interaction.reply({embeds: [this.createEmbed(author, member, time, false, reasonOption?.value as string)]});
-        } else {
-            await interaction.reply({embeds: [this.createEmbed(author, member, time, true, reasonOption?.value as string)]});
-        }
+
+        try {
+            console.log("LOL")
+            if (reasonOption && typeof reasonOption.value !== 'string') {
+                const reason = reasonOption!.value as unknown as string;
+                await member.timeout(time * 1000, reason);
+            } else {
+                await member.timeout(time * 1000, 'No reason provided');
+            };   
+        } catch (err: DiscordAPIError | any) {
+            await interaction.reply({content: 'Something went wrong!', ephemeral: true});
+            new Exception(err).logError();
+            return;
+        } 
+        await interaction.reply({embeds: [this.createEmbed(author, member, time, reasonOption?.value as string)]});
 	}
 
-    createEmbed(author: GuildMember, target: GuildMember, time: number, isUseful: boolean, reason: string) : EmbedBuilder {
+    createEmbed(author: GuildMember, target: GuildMember, time: number, reason: string) : EmbedBuilder {
         const embed = new EmbedBuilder()
-            .setDescription(isUseful ? `Muted ${target} for ${time} seconds!` : `(Not) Muted ${target} for ${time} seconds!
-            (Everyone role has send messages permission, so the member can still send messages)
-            You can fix this by removing the send messages permission from the everyone role!
-            And then ask Kikku to create a member role! New members will get this role!`)
+            .setDescription(`Muted ${target} for ${time} seconds!`)
             .setColor(Colors.DarkGrey)
             .setTimestamp(new Date())
             .setFooter({text: `Muted by ${author.user.tag}`, iconURL: `${author.user.avatarURL()}`})

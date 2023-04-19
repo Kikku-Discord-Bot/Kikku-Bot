@@ -25,14 +25,8 @@ export class MuteSlashCommand extends BaseSlashCommand {
                 type: SlashCommandOptionType.STRING
             },
 			{
-				name: 'delete_messages',
-				description: 'Delete messages from the member',
-				required: false,
-				type: SlashCommandOptionType.BOOLEAN
-			},
-			{
 				name: 'days_of_messages',
-				description: 'The amount of days to delete messages from, (max 7, default 7)',
+				description: 'The amount of days to delete messages from (max 7)',
 				required: false,
 				type: SlashCommandOptionType.INTEGER
 			}
@@ -48,7 +42,6 @@ export class MuteSlashCommand extends BaseSlashCommand {
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
         const memberOption = interaction.options.get('member')
         const reasonOption = interaction.options.get('reason')
-		const deleteMessagesOption = interaction.options.get('delete_messages')
 		const daysOfMessagesOption = interaction.options.get('days_of_messages')
         const author = interaction.member as GuildMember;
         const GuildDB = await GuildHandler.getGuildById(interaction.guild!.id);
@@ -71,20 +64,15 @@ export class MuteSlashCommand extends BaseSlashCommand {
         };
 
 		const reason = reasonOption?.value as string;
-		const deleteMessages = deleteMessagesOption?.value as boolean;
 		const daysOfMessages = daysOfMessagesOption?.value as number;
 		try {
-			if (deleteMessages) {
-				if (daysOfMessages && daysOfMessages > 0 && daysOfMessages <= 7) {
-					await member.ban({reason: reason, deleteMessageSeconds: daysOfMessages * 86400});
-				} else {
-					if (daysOfMessages && daysOfMessages > 7) {
-						await interaction.reply({content: 'You can only delete messages from more than the last 7 days!', ephemeral: true});
-						return;
-					}
-					await member.ban({reason: reason, deleteMessageDays: 7});
-				}
+			if (daysOfMessages && daysOfMessages > 0 && daysOfMessages <= 7) {
+				await member.ban({reason: reason, deleteMessageSeconds: daysOfMessages * 86400});
 			} else {
+				if (daysOfMessages && daysOfMessages > 7) {
+					await interaction.reply({content: 'You can only delete messages from more than the last 7 days!', ephemeral: true});
+					return;
+				}
 				await member.ban({reason: reason});
 			}
 			await interaction.reply({embeds: [this.createEmbed(author, member, reason)]});
