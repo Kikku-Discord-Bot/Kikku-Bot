@@ -82,6 +82,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 
 		await interaction.reply({
 			content: `${userOption} got bonked by ${interaction.user}!`,
+			//content: `${userOption} got bonked by ${interaction.user}!\n${gif}`,
 			files: [gif]
 		});
 	}
