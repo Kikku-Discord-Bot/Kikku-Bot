@@ -1,3 +1,4 @@
+import { GuildUserModel } from "../models/guild.db.model";
 import { UserModel } from "../models/user.db.model";
 
 export class UserHandler {
@@ -44,4 +45,37 @@ export class UserHandler {
 		if (!userDB) { return false; }
 		return true;
 	}
+
+	public static async addExperience(experience: number, id: string, guildId: string): Promise<boolean> {
+		const userDB = await UserModel.increment("experience", { by: experience, where: { id: id } });
+		const guildUserDB = await GuildUserModel.increment("experience", { by: experience, where: { fkUser: id, fkGuild: guildId } });
+		if (!userDB || !guildUserDB) { return false; }
+		return true;
+	}
+
+	public static async removeExperience(experience: number, id: string, guildId: string): Promise<boolean> {
+		const userDB = await UserModel.decrement("experience", { by: experience, where: { id: id } });
+		const guildUserDB = await GuildUserModel.decrement("experience", { by: experience, where: { fkUser: id, fkGuild: guildId } });
+		if (!userDB || !guildUserDB) { return false; }
+		return true;
+	}
+
+	public static async getExperience(id: string, guildId: string | undefined = undefined): Promise<{ user: number, guild: number}> {
+		let userExp = 0;
+		let guildUserExp = 0;
+		const userDB = await UserModel.findOne({ where: { id: id } });
+		if (userDB) { 
+			userExp = userDB.get("experience") as number;
+			console.log(userExp);
+		}
+		if (guildId) {
+			const guildUserDB = await GuildUserModel.findOne({ where: { fkUser: id, fkGuild: guildId } });
+			if (guildUserDB) { 
+				guildUserExp = guildUserDB.get("experience") as number;
+				console.log(guildUserExp);
+			}
+		}
+		return { user: userExp, guild: guildUserExp}
+	}
+		
 }

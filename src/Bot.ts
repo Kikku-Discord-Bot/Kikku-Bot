@@ -6,6 +6,7 @@ import databaseSynchronisation from "./structures/database/sync.db";
 import { DBConnection } from "./structures/database/dbConnection.db.class";
 import { TicketModule } from "./modules/Ticket.module";
 import { ModerationModule } from "./modules/Moderation.module";
+import { SocialModule } from "./modules/Social.module";
 
 dotenv.config();
 
@@ -48,10 +49,12 @@ async function main() {
 		baseClient.addModule(new GameModule());
 		baseClient.addModule(new TicketModule());
 		baseClient.addModule(new ModerationModule());
+		baseClient.addModule(new SocialModule());
+		
 		await baseClient.loadModules();
 		// Load keys
 		console.log("Loading keys for commands...");
-		await baseClient.loadKeys(process.env);
+		baseClient.loadKeys(process.env);
 		// Load events
 		await baseClient.loadEvents();
 		await baseClient.run(process.env.DISCORD_BOT_TOKEN);

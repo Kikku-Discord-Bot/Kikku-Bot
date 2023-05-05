@@ -37,6 +37,10 @@ export const GuildUserModel = sequelize.define(
 				key: "id",
 			},
 			primaryKey: true,
+		},
+		experience: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
 		}
 	}, {
 		timestamps: false,

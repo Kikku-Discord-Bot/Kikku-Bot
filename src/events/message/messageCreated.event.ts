@@ -1,6 +1,7 @@
 import { EmbedBuilder, Message, Events } from "discord.js";
 import { BaseEvent, BaseClient, BaseModule  } from "@src/structures";
 import { Colors } from "discord.js";
+import { UserHandler } from "@src/structures/database/handler/user.handler.class";
 
 /**
  * @description MessageCreated event
@@ -18,6 +19,12 @@ export class MessageCreatedEvent extends BaseEvent {
 		// SKIP IF AUTHOR IS BOT
 		if (message.author.bot) return;
 
+		if (message.guild?.id && message.author.id) {
+			// Between 15 and 25
+			const exp = Math.floor(Math.random() * 10) + 15;
+			const status = await UserHandler.addExperience(exp, message.author.id, message.guild.id);
+			console.log(status, exp)
+		}
 
 		if (message.mentions.has(client.user!) && message.author.id !== client.getAuthorId()) {
 			message.reply(`My prefix is \`${client.getPrefix()}\`, don't forget it!`);

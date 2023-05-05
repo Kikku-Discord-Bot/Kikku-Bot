@@ -11,6 +11,10 @@ export const UserModel = sequelize.define(
 		username: {
 			type: Sequelize.STRING,
 		},
+		experience: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
+		}
 	}
 );
 
