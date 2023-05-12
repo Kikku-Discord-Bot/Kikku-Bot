@@ -29,7 +29,12 @@ export class InteractionCreatedEvent extends BaseEvent {
 				await command.execute(client, interaction);
 			} catch (error) {
 				console.error(error);
-				await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+				if (!interaction.isRepliable()) return; 
+				if (interaction.deferred || interaction.replied) {
+					await interaction.editReply({ content: "There was an error while executing this command!"});
+				} else {
+					await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+				}
 			}
 		}
 	}

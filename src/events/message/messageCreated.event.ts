@@ -23,7 +23,6 @@ export class MessageCreatedEvent extends BaseEvent {
 			// Between 15 and 25
 			const exp = Math.floor(Math.random() * 10) + 15;
 			const status = await UserHandler.addExperience(exp, message.author.id, message.guild.id);
-			console.log(status, exp)
 		}
 
 		if (message.mentions.has(client.user!) && message.author.id !== client.getAuthorId()) {

@@ -4,7 +4,6 @@ import { SlashCommandOptionType } from "@src/structures";
 import { PermissionFlagsBits } from "discord.js";
 import { UserHandler } from "@src/structures/database/handler/user.handler.class";
 import * as Canvas from "canvas"
-import {PassThrough} from "stream"
 import exp from "constants";
 
 /**
@@ -60,31 +59,67 @@ export class InfoSlashCommand extends BaseSlashCommand {
             .setColor(Colors.Orange)
             .setTimestamp()
             .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() })
-        
-        await interaction.reply({ embeds: [embed], files: [await this.createImage(userLevel, exps.user)]});       
+        //await interaction.deferReply();
+        await interaction.reply({files: [await this.createImage({level: userLevel, exp: exps.user}, {level: guildLevel, exp: exps.guild})]});
+        //embeds: [embed], 
 	}
 
-    getLevel(experience: number): number {
-        return Math.floor(0.1 * Math.sqrt(experience) + 1);
+    getLevel(experience: number, level: number = 1): number {
+        let exponent = 1.5;
+        let baseExp = 100;
+        experience -= Math.floor(baseExp * (Math.pow(level + 1, exponent)));
+        if (experience < 0) {
+            return level;
+        } else {
+            return this.getLevel(experience, level + 1);
+        }
     }
 
+    needExp(level: number): number {
+        let exponent = 1.5;
+        let baseExp = 100;
+        return Math.floor(baseExp * (Math.pow(level + 1, exponent)));
+    }
 
-    createImage(level: number, experience: number): Promise<Buffer> {
+    levelExp(level: number): number {
+        let exponent = 1.5;
+        let baseExp = 100;
+        return Math.floor(baseExp * (Math.pow(level, exponent)));
+    }
+
+    remainingExp(level: number, exp: number): number {
+        return this.needExp(level) - exp;
+    }
+
+    remainingExpPourcentage(level: number, exp: number): number {
+        return Math.floor((exp / this.needExp(level)) * 100);
+    }
+
+    createImage(user: { level: number, exp: number }, guild: { level: number, exp: number }): Promise<Buffer> {
         return new Promise(async (resolve, reject) => {
-            const width = 500;
-            const height = 200;
+            const width = 600;
+            const height = 300;
+            Canvas.registerFont("./src/assets/fonts/Roboto-Regular.ttf", { family: "Roboto" });
             const canvas = Canvas.createCanvas(width, height);
             const ctx = canvas.getContext("2d");
-            
             const background = await Canvas.loadImage("https://wallpapercave.com/wp/wp11318817.jpg");
-            ctx.drawImage(background, 0, 0, width, height);
+            
+            console.log(this.remainingExpPourcentage(user.level, user.exp));
+            console.log(this.remainingExpPourcentage(guild.level, guild.exp));
 
-            ctx.strokeStyle = "#74037b";
-            ctx.strokeRect(0, 0, width, height);
-            ctx.font = "28px sans-serif";
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(`Level: ${level}`, width / 2.5, height / 1.8);
-            ctx.fillText(`Experience: ${experience}`, width / 2.5, height / 1.5);
+            ctx.drawImage(background, 0, 0, width, height);
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(15, 15, width - 30, height - 30);
+            
+            ctx.font = "28px Roboto";
+            ctx.fillStyle = "#ffff";
+            ctx.fillText(`Guild Level: ${guild.level}`, 15, 50);
+            // replace experience with exp bar
+            ctx.fillText(`Experience: ${this.remainingExpPourcentage(guild.level, guild.exp)}%`, 30, 80);
+
+            ctx.fillText(`Global Level: ${user.level}`, 15, 200);
+            // replace experience with exp bar
+            ctx.fillText(`Experience: ${this.remainingExpPourcentage(user.level, user.exp)}%`, 30, 230);
             const buffer = canvas.toBuffer("image/png");
             resolve(buffer);
         });

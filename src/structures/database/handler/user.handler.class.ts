@@ -66,13 +66,11 @@ export class UserHandler {
 		const userDB = await UserModel.findOne({ where: { id: id } });
 		if (userDB) { 
 			userExp = userDB.get("experience") as number;
-			console.log(userExp);
 		}
 		if (guildId) {
 			const guildUserDB = await GuildUserModel.findOne({ where: { fkUser: id, fkGuild: guildId } });
 			if (guildUserDB) { 
 				guildUserExp = guildUserDB.get("experience") as number;
-				console.log(guildUserExp);
 			}
 		}
 		return { user: userExp, guild: guildUserExp}
