@@ -92,7 +92,7 @@ export class InfoSlashCommand extends BaseSlashCommand {
     }
 
     remainingExpPourcentage(level: number, exp: number): number {
-        return Math.floor((exp / this.needExp(level)) * 100);
+        return Math.floor((exp /   * 100);
     }
 
     createImage(user: { level: number, exp: number }, guild: { level: number, exp: number }): Promise<Buffer> {
