@@ -2,6 +2,8 @@ import { BaseSlashCommand, BaseClient } from "@src/structures";
 import { ChatInputCommandInteraction } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import https = require("https");
+import { Exception } from "@src/structures/exception/exception.class";
+import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
 
 /**
  * @description Bonk slash command
@@ -34,11 +36,13 @@ export class BonkSlashCommand extends BaseSlashCommand {
         
 		if (!userOption) {
 			await interaction.reply({content: "Please provide a user to bonk.", ephemeral: true});
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No user provided`, LoggerEnum.INFO);
 			return;
 		}
 
 		if (!TENOR_API_KEY) {
 			await interaction.reply({content: "Tenor API is not configured. Please contact the bot owner.", ephemeral: true});
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) Tenor API is not configured`, LoggerEnum.INFO);
 			return;
 		}
 
@@ -62,28 +66,37 @@ export class BonkSlashCommand extends BaseSlashCommand {
 
 		if (!response) {
 			await interaction.reply({content: "Something went wrong. Please try again later.", ephemeral: true});
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No response from Tenor API`, LoggerEnum.INFO);
 			return;
 		}
 		const json = JSON.parse(response);
 		if (json.error) {
-			console.log("Error:", json.error);
-			await interaction.reply({content: "Something went wrong. Please try again later.", ephemeral: true});
-			return;
+			Exception.logToFile(json.error, true, {name: interaction.user.username, id: interaction.user.id});
+			throw new Error(json.error);
 		}
 		const index = Math.floor(Math.random() * limit);
 
 		let gif = "";
 		try {
 			gif = json.results[index].media_formats.gif.url
-		} catch (error) {
-			await interaction.reply({content: "Something went wrong. Please try again later.", ephemeral: true});
-			return;
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				Exception.logToFile(error, true, {name: interaction.user.username, id: interaction.user.id});
+				throw new Error("No gif found");
+			}
 		}
-
-		await interaction.reply({
-			content: `${userOption} got bonked by ${interaction.user}!`,
-			//content: `${userOption} got bonked by ${interaction.user}!\n${gif}`,
-			files: [gif]
-		});
+		
+		try {
+			await interaction.reply({
+				content: `${userOption} got bonked by ${interaction.user}!`,
+				//content: `${userOption} got bonked by ${interaction.user}!\n${gif}`,
+				files: [gif]
+			});
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				Exception.logToFile(error, true, {name: interaction.user.username, id: interaction.user.id});
+				throw new Error("Failed to reply to interaction with gif");
+			}
+		}
 	}
 }

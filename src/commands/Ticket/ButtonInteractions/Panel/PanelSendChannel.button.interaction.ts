@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType} from "discord.js";
+import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, InteractionEditReplyOptions } from "discord.js";
 
 /**
  * @description TicketOpen button interaction
@@ -22,7 +22,7 @@ export class PanelSendChannelInteraction extends BaseInteraction {
 		await interaction.editReply(PanelSendChannelInteraction.getMessageFormat());
 	}
 
-	public static getMessageFormat(): any {
+	public static getMessageFormat(): InteractionEditReplyOptions {
 		const embed = new EmbedBuilder()
 			.setTitle("Step 5/5 - Send the panel to a channel")
 			.setDescription("Select the channel where you want to send the ticket panel")

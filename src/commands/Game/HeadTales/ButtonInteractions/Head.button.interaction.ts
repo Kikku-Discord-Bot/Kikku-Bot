@@ -20,7 +20,6 @@ export class HeadButtonInteraction extends BaseInteraction {
 	 */
 
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
-		console.log("Head button interaction");
 		await interaction.reply("Head");
 	}
 }

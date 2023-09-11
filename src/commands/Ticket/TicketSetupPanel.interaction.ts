@@ -1,6 +1,6 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
-import { ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, embedLength, ButtonInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors, ButtonInteraction } from "discord.js";
 
 /**
  * @description Ticket setup slash command
@@ -21,7 +21,7 @@ export class TicketSetupPanelCommand extends BaseSlashCommand {
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction | ButtonInteraction): Promise<void> {
 		let panelTickets: PanelTicketHandler[] | null = null;
 		if (interaction.guild) {
-			panelTickets = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id);
+			panelTickets = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 			if (panelTickets && panelTickets.length > 0) {
 				for (let i = 0; i < panelTickets.length; i++) {
 					if (panelTickets[i].status == PanelTicketEnum.EDIT) {
@@ -46,14 +46,16 @@ export class TicketSetupPanelCommand extends BaseSlashCommand {
 					.setLabel("Edit a panel")
 					.setStyle(ButtonStyle.Secondary),
 			);
+
+			row.addComponents(
+				new ButtonBuilder()
+					.setCustomId("ticketpaneldelete")
+					.setLabel("Delete a panel")
+					.setStyle(ButtonStyle.Danger),
+			);
 		}
 
-		row.addComponents(
-			new ButtonBuilder()
-				.setCustomId("ticketpaneldelete")
-				.setLabel("Delete a panel")
-				.setStyle(ButtonStyle.Danger),
-		);
+		
 
 		const embed = new EmbedBuilder()
 			.setTitle("Ticket Panel")

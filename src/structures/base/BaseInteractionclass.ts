@@ -1,4 +1,6 @@
-import { Interaction, PermissionFlagsBits } from "discord.js";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Interaction } from "discord.js";
 import { BaseClient } from "@src/structures";
 
 /**

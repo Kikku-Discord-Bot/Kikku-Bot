@@ -2,7 +2,7 @@
 name: Code Improvement
 about: Show us where code is clunky
 title: "[IMPROVE CODE]"
-labels: refactor
+labels: ''
 assignees: ''
 
 ---

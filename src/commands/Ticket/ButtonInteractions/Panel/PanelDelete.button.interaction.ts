@@ -1,8 +1,8 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, Colors, ButtonStyle } from "discord.js";
-import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
-import { PanelCreateInteraction } from "./PanelCreate.button.interaction";
+import { ButtonInteraction, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, Colors, ButtonStyle, EmbedBuilder } from "discord.js";
+import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 import { TicketSetupPanelCommand } from "../../TicketSetupPanel.interaction";
+import { Exception } from "@src/structures/exception/exception.class";
 
 /**
  * @description TicketOpen button interaction
@@ -21,16 +21,30 @@ export class PanelDeleteInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
-		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id);
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		if (!ticketPanels) {
-			await interaction.reply({content: "An error occurred while getting your panel ticket", ephemeral: true});
-			return;
+			throw new Error("Ticket panels is null");
 		}
 
 		if (ticketPanels.length === 0) {
-			await new TicketSetupPanelCommand().execute(client, interaction)
-			return;
+			try {
+				await new TicketSetupPanelCommand().execute(client, interaction)
+			} catch (error: unknown) {
+				if (error instanceof Error)
+					throw new Exception(error.message);
+				throw new Exception("Couldn't open the ticket setup panel!");
+			}
 		}
+
+		const embed = new EmbedBuilder()
+			.setTitle("Ticket Delete")
+			.setDescription("Click the button below to choose a ticket to delete")
+			.setColor(Colors.DarkButNotBlack)
+			.setTimestamp();
+            
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>()
 		const row2  = new ActionRowBuilder<ButtonBuilder>()
@@ -60,10 +74,10 @@ export class PanelDeleteInteraction extends BaseInteraction {
 			new ButtonBuilder()
 				.setCustomId("ticketpanelconfirmdelete")
 				.setLabel("Delete")
-				.setStyle(ButtonStyle.Primary)
+				.setStyle(ButtonStyle.Danger)
 		);
 
 		await interaction.deferUpdate();
-		await interaction.editReply({content: "Select a panel to edit", components: [row, row2]});
+		await interaction.editReply({embeds: [embed], components: [row, row2]});
 	}
 }

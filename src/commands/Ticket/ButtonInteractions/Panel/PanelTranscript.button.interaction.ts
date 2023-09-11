@@ -1,6 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
 import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
-import { PanelTicketModel } from "@src/structures/database/models/panelTicket.db.model";
 import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType} from "discord.js";
 
 /**
@@ -22,14 +21,12 @@ export class PanelTranscriptInteraction extends BaseInteraction {
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 
 		if (!interaction.guild) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
         
 		const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		if (!panelTicket) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Panel is null");
 		}
         
 		let transcript = "None selected...";

@@ -1,6 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
 import { TicketManager } from "@src/structures/tickets/ticketManager.class";
-import { time } from "console";
 import { ChatInputCommandInteraction } from "discord.js";
 
 /**
@@ -20,8 +19,12 @@ export class TicketDeleteButtonInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-		TicketManager.getInstance().deleteTicket(interaction, client);
+		try {
+			TicketManager.getInstance().deleteTicket(interaction);
+		} catch (error: unknown) {
+			if (error instanceof Error)
+				throw new Error(error.message);
+			throw new Error("Couldn't delete the ticket!");
+		}
 	}
-
-    
 }

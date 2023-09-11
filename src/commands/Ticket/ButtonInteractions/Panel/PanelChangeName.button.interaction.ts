@@ -20,14 +20,12 @@ export class PanelChangeNameInteraction extends BaseInteraction {
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 		const message = interaction.message;
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 
 		const secondEmbed = message.embeds[1];
 		if (!secondEmbed || !secondEmbed.description) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 
 		const name = secondEmbed.description.replace(/`/g, "");

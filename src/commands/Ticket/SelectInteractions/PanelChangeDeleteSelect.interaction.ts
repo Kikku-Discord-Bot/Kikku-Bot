@@ -1,6 +1,7 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction, ChannelSelectMenuInteraction, StringSelectMenuInteraction} from "discord.js";
+import { ActionRowBuilder , ButtonBuilder, ButtonStyle, StringSelectMenuInteraction, StringSelectMenuBuilder} from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
+import { TicketHandler } from "@src/structures/database/handler/ticket.handler.class";
 /**
  * @description TicketOpen button interaction
  * @class TicketOpenButtonInteraction
@@ -19,12 +20,11 @@ export class PanelChangeDeleteSelectInteraction extends BaseInteraction {
      */
 	async execute(client: BaseClient, interaction: StringSelectMenuInteraction): Promise<void> {
 		if (interaction.values.length != 1) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
+			throw new Error("Interaction values length is not 1");
 		}
 
 		if (!interaction.guild) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const data = interaction.values[0]
@@ -35,11 +35,48 @@ export class PanelChangeDeleteSelectInteraction extends BaseInteraction {
 		const toChangePanel = await PanelTicketHandler.getPanelTicketById(data) 
 
 		if (!toChangePanel) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Panel is null");
 		}
 		toChangePanel.updatePanelTicketStatus(PanelTicketEnum.TO_DELETE)
-       
+		const ticketCount = await TicketHandler.getTicketCountByPanel(toChangePanel.id)
 		await interaction.deferUpdate();
+		if (ticketCount > 0) {
+			const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
+			const row = new ActionRowBuilder<StringSelectMenuBuilder>()
+			const row2  = new ActionRowBuilder<ButtonBuilder>()
+			const selectMenu = new StringSelectMenuBuilder()
+				.setCustomId("panelchangedeleteselect")
+				.setMinValues(1)
+				.setMaxValues(1)
+				.setPlaceholder("Select a panel to delete")
+				.addOptions(
+					ticketPanels.map((panel) => {
+						return {
+							label: panel.name ? panel.name : "No name",
+							value: panel.id,
+							description: panel.description ? panel.description.slice(0, 95) + "..." : "No description",
+							emoji: "🗒",
+							default: panel.status === PanelTicketEnum.TO_DELETE
+						}
+					}
+					));
+					
+			row.addComponents(selectMenu);
+			row2.addComponents(
+				new ButtonBuilder()
+					.setCustomId("ticketsetup")
+					.setLabel("Back")
+					.setStyle(ButtonStyle.Primary),
+				new ButtonBuilder()
+					.setCustomId("paneldeletetickets")
+					.setLabel(`Delete with ticket(s) (${ticketCount})`)
+					.setStyle(ButtonStyle.Danger),
+				new ButtonBuilder()
+					.setCustomId("ticketpanelconfirmdelete")
+					.setLabel("Delete")
+					.setStyle(ButtonStyle.Danger)
+			);
+			await interaction.editReply({ components: [row, row2] });
+		}
 	}
 }

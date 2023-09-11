@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Client, REST } from "discord.js";
 import { BaseModule } from "@src/structures";
 import eventLoader from "@events/loader"

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Message } from "discord.js";
 import { BaseClient } from "./BaseClient.class";
-
 
 /**
  * @description Base class for commands

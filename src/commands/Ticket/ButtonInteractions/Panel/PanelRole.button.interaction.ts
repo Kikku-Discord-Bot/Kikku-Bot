@@ -21,14 +21,12 @@ export class PanelRoleInteraction extends BaseInteraction {
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 
 		if (!interaction.guildId) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guildId);
 		if (!panelTicket) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Panel is null");
 		}
 
 		let roles = "None selected...";

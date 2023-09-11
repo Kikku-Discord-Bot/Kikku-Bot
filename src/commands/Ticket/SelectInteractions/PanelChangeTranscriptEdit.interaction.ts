@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction, ChannelSelectMenuInteraction} from "discord.js";
+import { EmbedBuilder, ChannelSelectMenuInteraction} from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 /**
  * @description TicketOpen button interaction
@@ -21,8 +21,7 @@ export class PanelChangeTranscriptInteraction extends BaseInteraction {
 		const message = interaction.message;
 
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 
 		const newChannel = interaction.values;
@@ -30,23 +29,20 @@ export class PanelChangeTranscriptInteraction extends BaseInteraction {
 
 		const secondEmbed = message.embeds[1];
 		if (!secondEmbed || !secondEmbed.title) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 
 		let stringChannel = "None selected...";
 		if (newChannel && newChannel.length >= 1) {
 			stringChannel = newChannel.map((channel) => `<#${channel}>\n`).join(" ");
 			if (!interaction.guild) {
-				await interaction.reply({ content: "Something went wrong", ephemeral: true });
-				return;
+				throw new Error("Guild is null");
 			}
 			PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id, PanelTicketEnum.EDIT).then((panelTicket) => {
 				const setChannel = newChannel[0]; 
 				if (panelTicket) {
 					if (!panelTicket.updatePanelTicketTranscriptChannel(setChannel)) {
-						interaction.reply({ content: "Something went wrong", ephemeral: true });
-						return; 
+						throw new Error("An error occurred while updating your panel ticket");
 					}
 				}
 			});

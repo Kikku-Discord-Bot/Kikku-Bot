@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message, Events } from "discord.js";
-import { BaseEvent, BaseClient, BaseModule  } from "@src/structures";
+import { BaseEvent, BaseClient } from "@src/structures";
 import { Colors } from "discord.js";
 
 /**
@@ -18,12 +18,13 @@ export class MessageCreatedEvent extends BaseEvent {
 		// SKIP IF AUTHOR IS BOT
 		if (message.author.bot) return;
 
+		if (!client.user) throw new Error("Client user is null");
 
-		if (message.mentions.has(client.user!) && message.author.id !== client.getAuthorId()) {
+		if (message.mentions.has(client.user) && message.author.id !== client.getAuthorId() && !message.mentions.everyone) {
 			message.reply(`My prefix is \`${client.getPrefix()}\`, don't forget it!`);
 		}
 
-		if (message.mentions.has(client.user!) && message.author.id === client.getAuthorId() && !message.mentions.everyone) {
+		if (message.mentions.has(client.user) && message.author.id === client.getAuthorId() && !message.mentions.everyone) {
 			const info = client.getInfo();
 			const username = client.users.cache.get(client.getAuthorId())?.tag
 
@@ -38,7 +39,7 @@ export class MessageCreatedEvent extends BaseEvent {
 					{ name: "Author", value: username ? username : "Not found", inline: true}
 				])
 
-			for (const [key, value] of info.modules.entries()) {
+			for (const [, value] of info.modules.entries()) {
 				embed.addFields([
 					{ name: "Module", value: value.getName(), inline: true },
 					{ name: "Commands", value: value.getCommands().size.toString(), inline: true},
@@ -56,9 +57,10 @@ export class MessageCreatedEvent extends BaseEvent {
 		if (message.content.startsWith(client.getPrefix())) {
 			const [commandName, ...args] = message.content.slice(client.getPrefix().length).trim().split(/ +/g);
 			for (const module of client.getModules().values()) {
-				if (!module.hasCommand(commandName)) continue;
-				if (!module.isEnabled() || !module.getCommand(commandName)!.isEnabled()) continue;
+				if (!module.hasCommand(commandName) || !module.getCommand(commandName)) continue;
+				if (!module.isEnabled()) continue;
 				const command = module.getCommand(commandName);
+				if (!command || command.isEnabled()) continue;
 				if (command) {
 					try {
 						console.log(`Command ${commandName} executed by ${message.author.tag}`);

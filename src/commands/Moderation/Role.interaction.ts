@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember, Role, PermissionFlagsBits} from "discord.js";
-import { BaseCommand, BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/structures";
+import { BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/structures";
 
 /**
  * @description SetRole command
@@ -54,22 +54,19 @@ export class addRoleCommand extends BaseSlashCommand {
 		const actionOption = interaction.options.get("action");
 
 		if (!memberOption || !roleOption || !actionOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member, role or action option is null");
 		}
 
 		const member = memberOption.member;
 		const role = roleOption.role;
 		const action = actionOption.value as string;
 
-		if (!member || !role || !interaction.guild || !action) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member || !role || !action) {
+			throw new Error("Member, role or action is null");
 		}
 
 		if (!(member instanceof GuildMember) || !(role instanceof Role)) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member or role is not a GuildMember or Role");
 		}
 
 		if (action === "remove") {

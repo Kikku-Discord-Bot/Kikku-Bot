@@ -1,6 +1,5 @@
 import { BaseClient, BaseEvent } from "@src/structures";
 import { GuildMember, Events } from "discord.js";
-import { UserHandler } from "@src/structures/database/handler/user.handler.class";
 import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
 
 /**

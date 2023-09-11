@@ -1,6 +1,6 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
+import { Exception } from "@src/structures/exception/exception.class";
 import { TicketManager } from "@src/structures/tickets/ticketManager.class";
-import { time } from "console";
 import { ChatInputCommandInteraction } from "discord.js";
 
 /**
@@ -20,15 +20,16 @@ export class TicketCancelDeleteButtonInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-		if (!interaction.guildId) {
-			await interaction.reply("This command can only be used in a server");
-			return;
-		}
 		if (!interaction.channelId) {
-			await interaction.reply("This command can only be used in a channel, if you are in a ticket, try again discord may have not updated the channel id yet");
-			return;
+			throw new Error("Channel id is null");
 		}
-		TicketManager.getInstance().cancelDeleteTicket(interaction.channelId);
+		try {
+			await TicketManager.getInstance().cancelDeleteTicket(interaction.channelId);
+		} catch (error: unknown) {
+			if (error instanceof Error)
+				throw new Exception(error.message);
+			throw new Exception("Couldn't cancel the ticket deletion!");
+		}
 		await interaction.reply("Ticket deletion cancelled");
 		await interaction.deleteReply();
 	}

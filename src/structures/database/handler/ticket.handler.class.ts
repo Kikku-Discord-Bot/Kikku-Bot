@@ -68,16 +68,16 @@ export class TicketHandler {
 	}
 
 	public async delete(): Promise<boolean> {
-		const ticketDB2 = await UserTicketModel.destroy({ where: { fkTicket: this._id } });
-		const ticketDB3 = await GuildTicketModel.destroy({ where: { fkTicket: this._id } });
+		await UserTicketModel.destroy({ where: { fkTicket: this._id } });
+		await GuildTicketModel.destroy({ where: { fkTicket: this._id } });
 		const ticketDB = await TicketModel.destroy({ where: { id: this._id } });
 		if (!ticketDB) { return false; }
 		return true;
 	}
 
 	public static async deleteTicket(id: string): Promise<boolean> {
-		const ticketDB2 = await UserTicketModel.destroy({ where: { fkTicket: id } });
-		const ticketDB3 = await GuildTicketModel.destroy({ where: { fkTicket: id } });
+		await UserTicketModel.destroy({ where: { fkTicket: id } });
+		await GuildTicketModel.destroy({ where: { fkTicket: id } });
 		const ticketDB = await TicketModel.destroy({ where: { id: id } });
 		if (!ticketDB) { return false; }
 		return true;
@@ -152,6 +152,16 @@ export class TicketHandler {
 		if (!ticketDB) { return null; }
 		for (let i = 0; i < ticketDB.length; i++) {
 			ticket[i] = ticketDB[i].get("ticket") as string;
+		}
+		return ticket;
+	}
+
+	public static async getTicketOfPanel(id: string): Promise<string[] | null> {
+		const ticket = new Array<string>();
+		const ticketDB = await TicketModel.findAll({ where: { fkPanel: id } });
+		if (!ticketDB) { return null; }
+		for (let i = 0; i < ticketDB.length; i++) {
+			ticket[i] = ticketDB[i].get("id") as string;
 		}
 		return ticket;
 	}

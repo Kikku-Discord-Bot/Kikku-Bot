@@ -1,8 +1,7 @@
 import { ButtonBuilder, ActionRowBuilder } from "@discordjs/builders";
-import { ButtonStyle, MessageType, ChatInputCommandInteraction, 
+import { ButtonStyle, ChatInputCommandInteraction, 
 	TextChannel, Message, MessageCreateOptions, User, OverwriteResolvable} from "discord.js";
 import { EmbedBuilder } from "discord.js";
-import fs from "fs";
 import { BaseClient } from "@src/structures";
 import { TicketHandler  } from "../database/handler/ticket.handler.class";
 import buildTranscript from "./transcript/transcript"
@@ -83,7 +82,13 @@ export class Ticket {
 			return;
 		}
 
-		await channel.permissionOverwrites.edit(interaction.guild!.roles.everyone, {
+		if (!interaction.guild)
+			throw new Error("Guild is null");
+
+		if (!this.TicketHandler)
+			throw new Error("TicketHandler is null");
+
+		await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
 			SendMessages: true,
 		});
 
@@ -91,7 +96,9 @@ export class Ticket {
 		let isChanged = false;
 
 		this.TicketHandler?.permissions.find((permission) => {
-			if (permission.id === interaction.guild!.roles.everyone.id) {
+			if (!interaction.guild)
+				throw new Error("Guild is null");
+			if (permission.id === interaction.guild.roles.everyone.id) {
 				permission.allow = ["SendMessages"]
 				permission.deny = ["ViewChannel"]
 				isChanged = true;
@@ -99,8 +106,8 @@ export class Ticket {
 		});
 
 		if (!isChanged) {
-			this.TicketHandler?.permissions.push({
-				id: interaction.guild!.roles.everyone.id,
+			this.TicketHandler.permissions.push({
+				id: interaction.guild.roles.everyone.id,
 				allow: ["SendMessages"],
 				deny: ["ViewChannel"]
 			});
@@ -110,10 +117,10 @@ export class Ticket {
 		if (this.messageEmbed) {
 			await this.messageEmbed.delete();
 			this.messageEmbed = await channel.send(this.optionsTicketCommandEmbed(this.isClosed));
-			this.TicketHandler!.embedMessage = this.messageEmbed.id;
+			this.TicketHandler.embedMessage = this.messageEmbed.id;
 		}
 
-		this.TicketHandler?.save();
+		this.TicketHandler.save();
 
 		interaction.reply("Ticket Open!");
 		setTimeout(() => {
@@ -128,14 +135,24 @@ export class Ticket {
 			return;
 		}
 
-		await channel.permissionOverwrites.edit(interaction.guild!.roles.everyone, {
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+
+		if (!this.TicketHandler) {
+			throw new Error("TicketHandler is null");
+		}
+
+		await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
 			SendMessages: false,
 		});
 
 		let isChanged = false;
 
-		this.TicketHandler?.permissions.find((permission) => {
-			if (permission.id === interaction.guild!.roles.everyone.id) {
+		this.TicketHandler.permissions.find((permission) => {
+			if (!interaction.guild)
+				throw new Error("Guild is null");
+			if (permission.id === interaction.guild.roles.everyone.id) {
 				permission.deny = ["ViewChannel", "SendMessages"]
 				permission.allow = []
 				isChanged = true;
@@ -143,8 +160,8 @@ export class Ticket {
 		});
 
 		if (!isChanged) {
-			this.TicketHandler?.permissions.push({
-				id: interaction.guild!.roles.everyone.id,
+			this.TicketHandler.permissions.push({
+				id: interaction.guild.roles.everyone.id,
 				deny: ["ViewChannel", "SendMessages"],
 				allow: []
 			});
@@ -153,13 +170,14 @@ export class Ticket {
 		this.isClosed = true;
 
 		console.log(this.messageEmbed)
+
 		if (this.messageEmbed) {
 			await this.messageEmbed.delete();
 			this.messageEmbed = await channel.send(this.optionsTicketCommandEmbed(this.isClosed));
-			this.TicketHandler!.embedMessage = this.messageEmbed.id;
+			this.TicketHandler.embedMessage = this.messageEmbed.id;
 		}
 
-		this.TicketHandler?.save();
+		this.TicketHandler.save();
 
 
 		interaction.reply("Ticket closed!");
@@ -169,7 +187,7 @@ export class Ticket {
 	}
 			
 
-	public async deleteTicket(interaction: ChatInputCommandInteraction, client: BaseClient) {
+	public async deleteTicket(interaction: ChatInputCommandInteraction) {
 		await interaction.reply("Ticket will be deleted in 10 seconds");
 		const channel = interaction.channel;
 		if (!channel) {
@@ -191,9 +209,15 @@ export class Ticket {
 		const interval = setInterval(async () => {
 			try {
 				if (this.isDeleted) {
-					await interaction.channel!.delete();
-					this.TicketHandler?.delete();
-					clearInterval(interval);
+					if (interaction.channel && this.TicketHandler) {
+						await interaction.channel.delete();
+						this.TicketHandler.delete();
+						clearInterval(interval);
+					} else {
+						await interaction.editReply("Ticket could not be deleted!");
+						clearInterval(interval);
+						return;
+					}
 					return;
 				}
 				if (!this.isBeingDeleted) {

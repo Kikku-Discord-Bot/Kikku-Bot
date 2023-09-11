@@ -20,9 +20,19 @@ export class TicketCreateCommand extends BaseCommand {
      * @returns {Promise<void>}
      */
 
-	async execute(client: BaseClient, message: Message, args: string[]): Promise<void> {
-		TicketManager.getInstance().setNewTicketFromMessage(message);
-		console.log(TicketManager.getInstance().getTicket(message.channel.id));
+	async execute(client: BaseClient, message: Message): Promise<void> {
+		const { ENV } = client.getKeys();
+		if (ENV !== "dev") {
+			const send = await message.reply({content: "This command is not available in production"});
+			setTimeout(() => {
+				send.delete();
+				message.delete();
+			}, 5000);
+			return;
+		} else {
+			TicketManager.getInstance().setNewTicketFromMessage(message);
+			console.log(TicketManager.getInstance().getTicket(message.channel.id));
+		}
 	}
 
 }

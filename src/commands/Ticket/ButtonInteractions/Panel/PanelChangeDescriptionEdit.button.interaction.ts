@@ -20,14 +20,12 @@ export class PanelChangeDescriptionInteraction extends BaseInteraction {
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 		const message = interaction.message;
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
         
 		const thirdEmbed = message.embeds[2];
 		if (!thirdEmbed || !thirdEmbed.description) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 
 		const description = thirdEmbed.description.replace(/`/g, "");

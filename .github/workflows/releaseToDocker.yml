@@ -1,0 +1,34 @@
+# Deployment of Kikku on SSH server
+name: Deploy release to Docker
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Create a Release for Docker
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+
+      - name: Install all dependencies
+        run: npm install
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: .
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u TrueBabyChaise --password-stdin
+
+      - name: Build docker image
+        run: docker build -t ghcr.io/truebabychaise/kikku:${{ github.event.release.tag_name }} .
+
+      - name: Push the client image to GitHub Container Registry
+        run: docker push ghcr.io/truebabychaise/kikku:${{ github.event.release.tag_name }}

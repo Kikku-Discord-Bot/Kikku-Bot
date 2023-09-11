@@ -1,7 +1,8 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, Colors, ButtonStyle } from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 import { PanelDeleteInteraction } from "./PanelDelete.button.interaction";
+import { Exception } from "@src/structures/exception/exception.class";
 
 /**
  * @description TicketOpen button interaction
@@ -20,9 +21,19 @@ export class PanelConfirmDeleteInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
-		const ticketPanel = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id, PanelTicketEnum.TO_DELETE);
-		if (ticketPanel) {
-			await ticketPanel.deletePanelTicket()
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+		
+		try {
+			const ticketPanel = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id, PanelTicketEnum.TO_DELETE);
+			if (ticketPanel) {
+				await ticketPanel.deletePanelTicket()
+			}
+		} catch (error: unknown) {
+			if (error instanceof Error)
+				throw new Exception(error.message);
+			throw new Exception("Couldn't confirm delete the ticket panel!");
 		}
 
 		await new PanelDeleteInteraction().execute(client, interaction)

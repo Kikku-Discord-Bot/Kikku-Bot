@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction, ChannelSelectMenuInteraction} from "discord.js";
+import { ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, ChannelSelectMenuInteraction} from "discord.js";
 import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 /**
  * @description TicketOpen button interaction
@@ -19,30 +19,25 @@ export class PanelSendChannelInteraction extends BaseInteraction {
      */
 	async execute(client: BaseClient, interaction: ChannelSelectMenuInteraction): Promise<void> {
 		const message = interaction.message;
-		const components = message.components;
 		const newChannel = interaction.values;
 
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 
 		if (!interaction.guild) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		if (!panelTicket) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Panel ticket is null");
 		}
 
 		if (newChannel && newChannel.length >= 1) {
 			const setChannel = newChannel[0];
 			if (!panelTicket.updatePanelTicketSendChannel(setChannel)) {
-				await interaction.reply({ content: "Something went wrong", ephemeral: true });
-				return;
+				throw new Error("An error occurred while updating your panel ticket");
 			}
 		}
 

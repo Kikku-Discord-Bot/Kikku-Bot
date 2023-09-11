@@ -1,5 +1,5 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
-import { ChatInputCommandInteraction, Colors, GuildMember, PermissionsBitField, EmbedBuilder, Guild } from "discord.js";
+import { ChatInputCommandInteraction, Colors, GuildMember, PermissionsBitField, EmbedBuilder } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import { PermissionFlagsBits } from "discord.js";
 import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
@@ -44,29 +44,39 @@ export class MuteSlashCommand extends BaseSlashCommand {
 		const timeOption = interaction.options.get("time")
 		const reasonOption = interaction.options.get("reason")
 		const author = interaction.member as GuildMember;
-		const GuildDB = await GuildHandler.getGuildById(interaction.guild!.id);
 
-		if (!memberOption || !timeOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+
+		const GuildDB = await GuildHandler.getGuildById(interaction.guild.id);
+
+		if (!GuildDB) {
+			throw new Error("GuildDB is null");
+		}
+
+		if (!timeOption) {
+			throw new Error("Time option is null");
+		}
+
+		if (!memberOption) {
+			throw new Error("Member option is null");
 		}
         
 		const member = memberOption.member;
 		const time = timeOption.value as number;
 
-		if (!member || !time || !interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member || !time) {
+			throw new Error(`Member or time is null, member: ${member}, time: ${time}`);
 		}
 
 		if (!(member instanceof GuildMember)) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member is not a GuildMember");
 		}
         
 		const role = interaction.guild.roles.cache.find(role => role.name === "Muted");
-		const memberRoleSetup = GuildDB!.memberRoleId;
-		const roleMember = interaction.guild.roles.cache.find(role => role.id === GuildDB!.memberRoleId);
+		const memberRoleSetup = GuildDB.memberRoleId;
+		const roleMember = interaction.guild.roles.cache.find(role => role.id === GuildDB.memberRoleId);
 		if (!role) {
 			if (!memberRoleSetup || !roleMember) {
 				const permissions = new PermissionsBitField();
@@ -90,13 +100,13 @@ export class MuteSlashCommand extends BaseSlashCommand {
 					color: Colors.DarkGrey,
 					permissions: []
 				}).then(async role => {
-					await member.roles.remove(GuildDB!.memberRoleId);
+					await member.roles.remove(GuildDB.memberRoleId);
 					await member.roles.add(role);
 					setTimeout(async () => {
 						if (member.roles.cache.has(role.id))
 							await member.roles.remove(role);
-						if (!member.roles.cache.has(GuildDB!.memberRoleId))
-							await member.roles.add(GuildDB!.memberRoleId);
+						if (!member.roles.cache.has(GuildDB.memberRoleId))
+							await member.roles.add(GuildDB.memberRoleId);
 					}, time * 1000);
 				});
 			}
@@ -109,12 +119,12 @@ export class MuteSlashCommand extends BaseSlashCommand {
 				}, time * 1000);
 			} else {
 				await member.roles.add(role);
-				await member.roles.remove(GuildDB!.memberRoleId);
+				await member.roles.remove(GuildDB.memberRoleId);
 				setTimeout(async () => {
 					if (member.roles.cache.has(role.id))
 						await member.roles.remove(role);
-					if (!member.roles.cache.has(GuildDB!.memberRoleId))
-						await member.roles.add(GuildDB!.memberRoleId);
+					if (!member.roles.cache.has(GuildDB.memberRoleId))
+						await member.roles.add(GuildDB.memberRoleId);
 				}, time * 1000);
 			}
 		}

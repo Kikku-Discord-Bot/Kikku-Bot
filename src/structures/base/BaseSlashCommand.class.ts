@@ -1,6 +1,6 @@
-import { Interaction, SlashCommandBuilder, ApplicationCommandOptionType, APIApplicationCommandOptionChoice } from "discord.js";
-import { BaseClient, BaseInteraction } from "@src/structures";
-import { BOOLEAN } from "sequelize";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SlashCommandBuilder, ApplicationCommandOptionType, APIApplicationCommandOptionChoice } from "discord.js";
+import { BaseInteraction } from "@src/structures";
 
 export enum SlashCommandOptionType {
 	USER = ApplicationCommandOptionType.User,

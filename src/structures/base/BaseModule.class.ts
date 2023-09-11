@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseCommand, BaseInteraction, BaseClient, BaseSlashCommand } from "@src/structures";
 import { Routes } from "discord.js";
 import fs from "fs";
+import { Exception } from "../exception/exception.class";
 
 /**
  * @description Base class for modules
@@ -141,9 +143,9 @@ export abstract class BaseModule {
 					for (const alias of command.aliases) {
 						this.aliases.set(alias, command);
 					}
-				} catch (error) {
-					console.error(error);
-					console.log(`Could not load command ${path}/${file}`);
+				} catch (error: unknown) {
+					if (error instanceof Error)
+						throw new Exception(error.message)
 				}
 			}
 		}
@@ -192,7 +194,7 @@ export abstract class BaseModule {
 		const toRegister = [];
 		const registered = [];
 		let hasChanged = false;
-		for (const [_, interaction] of this.interactions) {
+		for (const [, interaction] of this.interactions) {
 			if (!(interaction instanceof BaseSlashCommand)) continue;
 			registered.push(interaction.getName());
 			const match = alreadyAdded.find(i => i.name === interaction.getName());
@@ -212,20 +214,18 @@ export abstract class BaseModule {
 			console.log(`No slash commands to register for module ${this.name}`);
 			return {hasChanged, registered};
 		}
-
+		
 		console.table(toRegister)
-		let data;
-
 		if (!guildId) {
 			for (const command of toRegister) {
-				data = await client.getBaseRest().post(
+				await client.getBaseRest().post(
 					Routes.applicationCommands(client.getClientId()),
 					{ body: command }
 				)
 			}
 		} else {
 			for (const command of toRegister) {
-				data = await client.getBaseRest().post(
+				await client.getBaseRest().post(
 					Routes.applicationGuildCommands(client.getClientId(), guildId),
 					{ body: command }
 				)

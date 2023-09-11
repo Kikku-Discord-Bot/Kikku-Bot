@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, StringSelectMenuBuilder, Colors, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction, ChannelSelectMenuInteraction, StringSelectMenuInteraction, RoleSelectMenuBuilder } from "discord.js";
+import { EmbedBuilder, Colors, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, StringSelectMenuInteraction, RoleSelectMenuBuilder } from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 /**
  * @description TicketOpen button interaction
@@ -18,21 +18,17 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: StringSelectMenuInteraction): Promise<void> {
-		const message = interaction.message;
-
 		if (interaction.values.length != 1) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
+			throw new Error("Interaction values length is not 1");
 		}
 
 		if (!interaction.guild) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const panel = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id, PanelTicketEnum.EDIT);
 		if (!panel) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Panel is null");
 		}
 
 		switch (interaction.values[0]) {
@@ -49,7 +45,7 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 			await this.formatChangeTranscript(client, interaction, panel);
 			break;
 		case "send":
-			await this.formatChangeSend(client, interaction, panel);
+			await this.formatChangeSend(client, interaction);
 			break;
 		}
 
@@ -57,12 +53,10 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 			return;
 		}
 
-		await interaction.reply({ content: "Something went wrong", ephemeral: true });
+		throw new Error("Interaction not replied");
 	}
 
 	async formatChangeNameAndDescription(client: BaseClient, interaction: StringSelectMenuInteraction, panel: PanelTicketHandler) {
-		const message = interaction.message;
-
 		const embed = new EmbedBuilder()
 			.setTitle("Change your panel name and description")
 			.setDescription("Click the buttons below to update your panel")
@@ -105,8 +99,6 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 	}
 
 	async formatChangeRole(client: BaseClient, interaction: StringSelectMenuInteraction, panel: PanelTicketHandler) {
-		const message = interaction.message;
-
 		const embed = new EmbedBuilder()
 			.setTitle("Change your panel role")
 			.setDescription("Click the buttons below to update your panel")
@@ -146,8 +138,6 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 	}
 
 	async formatChangeCategory(client: BaseClient, interaction: StringSelectMenuInteraction, panel: PanelTicketHandler) {
-		const message = interaction.message;
-
 		const embed = new EmbedBuilder()
 			.setTitle("Change your panel category")
 			.setDescription("Click the buttons below to update your panel")
@@ -179,8 +169,6 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 	}
 
 	async formatChangeTranscript(client: BaseClient, interaction: StringSelectMenuInteraction, panel: PanelTicketHandler) {
-		const message = interaction.message;
-
 		const embed = new EmbedBuilder()
 			.setTitle("Change your panel transcript channel")
 			.setDescription("Click the buttons below to update your panel")
@@ -213,9 +201,7 @@ export class PanelChangeActionEditSelectInteraction extends BaseInteraction {
 		await interaction.editReply({ embeds: [embed, embed2], components: [row, row2] })
 	}
 
-	async formatChangeSend(client: BaseClient, interaction: StringSelectMenuInteraction, panel: PanelTicketHandler) {
-		const message = interaction.message;
-
+	async formatChangeSend(client: BaseClient, interaction: StringSelectMenuInteraction) {
 		const embed = new EmbedBuilder()
 			.setTitle("Change your panel send channel")
 			.setDescription("Click the buttons below to update your panel")

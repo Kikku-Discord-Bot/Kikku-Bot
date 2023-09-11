@@ -29,8 +29,7 @@ export class HelpSlashCommand extends BaseSlashCommand {
 		const commandOption = interaction.options.get("command")
 
 		if (!interaction.channel) {
-			await interaction.reply({content: "Something went wrong!", ephemeral: true});
-			return;
+			throw new Error("Interaction channel is null");
 		}
 
 		if (!commandOption) {
@@ -50,8 +49,7 @@ export class HelpSlashCommand extends BaseSlashCommand {
 			}
 
 			if (!command) {
-				await interaction.reply({content: "Something went wrong!", ephemeral: true});
-				return;
+				throw new Error(`Command ${commandOption.value} not found!`);
 			}
 
 			const embed = new EmbedBuilder()

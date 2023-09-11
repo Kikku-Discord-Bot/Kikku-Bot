@@ -53,26 +53,27 @@ export class MuteSlashCommand extends BaseSlashCommand {
 		const author = interaction.member as GuildMember;
 
 		if (!interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const GuildDB = await GuildHandler.getGuildById(interaction.guild.id);
 
 		if (!memberOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member option is null");
 		}
         
 		const member = memberOption.member;
 
-		if (!member || !interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member) {
+			throw new Error("Member is null");
 		}
 
 		if (!(member instanceof GuildMember)) {
-			await interaction.reply("Something went wrong!");
+			throw new Error("Member is not a GuildMember");
+		}
+
+		if (!member.bannable) {
+			await interaction.reply({content: `I am missing permissions to ban ${member} !`, ephemeral: true});
 			return;
 		}
 
@@ -95,8 +96,8 @@ export class MuteSlashCommand extends BaseSlashCommand {
 			}
 			await interaction.reply({embeds: [this.createEmbed(author, member, reason)]});
 			GuildDB?.removeUserFromGuild(member.id);
-		} catch (error: any) {
-			if (error.rawError.message.includes("Missing Permissions")) {
+		} catch (error: unknown) { // Discord API error
+			if ((error as { rawError: { message: string; }; }).rawError.message.includes("Missing Permissions")) {
 				await interaction.reply({content: "I am missing permissions to ban this member!", ephemeral: true});
 				return;
 			}

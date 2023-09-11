@@ -22,18 +22,15 @@ export class TicketOpenButtonInteraction extends BaseInteraction {
 	async execute(client: BaseClient, interaction: ModalSubmitInteraction): Promise<void> {
 		const message = interaction.message;
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 		const newName = interaction.fields.getTextInputValue("panelname");
 		if (!newName) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("New name is null");
 		}
 		const secondEmbed = message.embeds[1];
 		if (!secondEmbed || !secondEmbed.title) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 		const newSecondEmbed = new EmbedBuilder()
 			.setTitle(secondEmbed.title)
@@ -47,8 +44,7 @@ export class TicketOpenButtonInteraction extends BaseInteraction {
                     
 					// Check if the update was successful
 					if (!status) {
-						interaction.reply({ content: "Something went wrong", ephemeral: true });
-						return;
+						throw new Error("An error occurred while updating your panel ticket");
 					}
 				}
 			});
