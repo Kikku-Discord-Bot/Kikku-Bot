@@ -60,7 +60,7 @@ export class MessageCreatedEvent extends BaseEvent {
 				if (!module.hasCommand(commandName) || !module.getCommand(commandName)) continue;
 				if (!module.isEnabled()) continue;
 				const command = module.getCommand(commandName);
-				if (!command || command.isEnabled()) continue;
+				if (!command || !command.isEnabled()) continue;
 				if (command) {
 					try {
 						console.log(`Command ${commandName} executed by ${message.author.tag}`);
