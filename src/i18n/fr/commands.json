@@ -1,0 +1,32 @@
+{
+    "sailing": {
+        "init": "Vous prenez la mer avec votre {{item}}",
+        "title": "Navigation",
+        "trip": "Voyage",
+        "to": "Vous naviguer jusqu'à {{dest}} avec votre {{item}}",
+        "chest": "Vous trouvez un coffre durant votre voyage vers {{dest}}",
+        "meeting": "Vous rencontrez un autre bateau durant votre voyage vers {{dest}}",
+        "weather": "Vous rencontrez {{weather}} durant votre voyage vers {{dest}}",
+        "hostile": "Vous rencontrez un monstre marin durant votre voyage vers {{dest}}",
+        "storm": "Vous rencontrez une tempête durant votre voyage vers {{dest}}",
+        "nothing": "Vous ne rencontrez rien durant votre voyage vers {{dest}}",
+        "item" : {
+            "WithoutMap": "Vous n'avez pas de carte, je prie pour que vous vous en sortiez indemme",
+            "WithoutPose": "Vous naviguez jusqu'à {{dest}} avec votre {{item}} sans {{pose}}, difficile de savoir où allez sans {{pose}}",
+            "WithLogPose": "Vous utilisez un Log Pose pour naviguer jusqu'à {{dest}} avec votre {{item}}",
+            "WithTriLogPose": "Vous utilisez un Tri Log Pose pour naviguer jusqu'à {{dest}} avec votre {{item}}",
+            "WithParadisMap": "Vous utilisez une carte de Grand Line pour naviguer, j'espère que ca vous aidera à éviter les dangers de la mer",
+            "WithNWMap": "Vous utilisez une carte du Nouveau Monde pour naviguer, j'espère que ca vous aidera à éviter les dangers de la mer"
+        }
+    },
+    "roll": {
+        "hdr": { 
+            "fail": "**\\-ˏˋ ════════════════════════════════════ ´ˎ\\-\nDommage pour toi {{user}}, le Haki des Rois ne sommeille pas en toi ! Cela ne veut cependant pas dire que tu ne règneras pas sur les mers !\n\\-ˏˋ ════════════════════════════════════ ´ˎ\\-**",
+            "success": "**\\-ˏˋ ════════════════════════════════════ ´ˎ\\-\nIncroyable ! {{user}}, tu sembles posséder le Haki des Rois ! Il te reste un long chemin avant de parvenir à le maîtriser, mais je sens que tu vas faire des merveilles !\n\\-ˏˋ ════════════════════════════════════ ´ˎ\\-**"
+        },
+        "d": {
+            "fail": "**\\-ˏˋ ════════════════════════════════════ ´ˎ\\-\nMalheureusement pour toi {{user}}, la volonté du D ne t'a pas été accordée ! Mais cela ne t'empêchera pas de marquer le monde de ton empreinte !\n\\-ˏˋ ════════════════════════════════════ ´ˎ\\-**",
+            "success": "**\\-ˏˋ ════════════════════════════════════ ´ˎ\\-\nQu'est-ce que ?... {{user}} ! Il semblerait que la volonté du D t'ai été accordée ! J'espère que tu es bien préparé, un incroyable destin te tend les bras !\n\\-ˏˋ ════════════════════════════════════ ´ˎ\\-**"
+        }
+    }
+}

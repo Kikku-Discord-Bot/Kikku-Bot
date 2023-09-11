@@ -1,0 +1,46 @@
+{
+    "help": "Help",
+    "author": "Author",
+    "version": "Version",
+    "support": "Support",
+    "prefix": "Prefix",
+    "language": "Language",
+    "commands": "Commands",
+    "modules": "Modules",
+    "interaction": "Interactions",
+    "categories": "Categories",
+    "category": "Category",
+    "aliases": "Alias",
+    "description": "Description",
+
+
+    "prefixString": "My prefix is {{prefix}}, don't forget it !",
+    "prefixSet": "The prefix has been set to {{prefix}}",
+    "prefixReset": "The prefix has been reset to {{prefix}}",
+
+    "noPermission": "You don't have the permission to do that !",
+    "botInfo": "Bot informations",
+    "botInfoDescription": "Here are the informations about me",
+    
+    "userInfo": "Informations about {{user}}",
+    "userInfoDescription": "Here are the informations about {{user}}",
+
+    "footerAbout": "Developped by {{user}}",
+    "footerCommand": "Command executed by {{user}}",
+
+    "helloAdmin": "Hello {{user}}-senpai !",
+    "error": {
+        "unspecified": "Something went wrong !, contact {{user}}",
+        "noArgs": "You didn't give any arguments !",
+        "noUser": "I didn't find the user !",
+        "noReason": "You didn't give any reason !",
+        "noChannel": "I didn't find the channel !",
+        "noRole": "I didn't find the role !",
+        "noMessage": "I didn't find the message !",
+        "noNumber": "You didn't give any number !",
+        "noEmoji": "I didn't find the emoji !",
+        "noCommand": "I didn't find the command !",
+        "noGuild": "I didn't find the guild !",
+        "noCategory": "I didn't find the category !"
+    }
+}
