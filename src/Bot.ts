@@ -44,8 +44,8 @@ async function main() {
 		console.log("Adding modules...");
 		baseClient.addModules([
 			new GameModule(),
-			new TicketModule(),
-			new ModerationModule(),
+			//new TicketModule(),
+			//new ModerationModule(),
 		]);
 		console.log("Synchronising database...");
 		await databaseSynchronisation();

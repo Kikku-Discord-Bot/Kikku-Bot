@@ -12,16 +12,18 @@ import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
  */
 export class BonkSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("bonk", "Bonk someone",
-			[
+		super({
+			name: "bonk",
+			description: "Bonk someone",
+			options: [
 				{
 					name: "user",
-					description: "The user to bonk",
+					description: "User to bonk",
 					type: SlashCommandOptionType.USER,
 					required: true
 				}
 			],
-			0, true, []);
+		});
 	}
 
 	/**

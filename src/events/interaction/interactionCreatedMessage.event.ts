@@ -25,7 +25,10 @@ export class InteractionCreatedEvent extends BaseEvent {
 			if (module.getInteractions().size == 0) continue;
 			if (!module.getInteractions().has(interaction.commandName)) continue;
 			const command: BaseInteraction | undefined = module.getInteractions().get(interaction.commandName);
-			if (!command) continue;
+			if (!command) {
+				Exception.logToFile(new Error(`Command ${interaction.commandName} not found`), true);
+				return;
+			}
 			try {
 				await command.execute(client, interaction);
 			} catch (error: unknown) {

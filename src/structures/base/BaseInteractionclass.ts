@@ -8,9 +8,9 @@ import { BaseClient } from "@src/structures";
  * @category BaseClass
  */
 export abstract class BaseInteraction  {
-	private name: string;
-	private description: string;
-	private options: any;
+	protected name: string;
+	protected description: string;
+	protected options: any;
 	private enabled: boolean;
 	private cooldown: number;
 	private permissions: bigint[];

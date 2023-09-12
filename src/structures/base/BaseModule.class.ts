@@ -285,6 +285,28 @@ export abstract class BaseModule {
 
 	private isChanged(interaction: BaseSlashCommand, restInteraction: any): number {
 		if (restInteraction === undefined) return 1;
+		if (interaction.getNameLocalizations() != null && restInteraction.name_localizations == null) return 2
+		if (interaction.getNameLocalizations() == null && restInteraction.name_localizations != null) return 2;
+		if ((interaction.getNameLocalizations() !== restInteraction.name_localizations) && interaction.getNameLocalizations() != null && restInteraction.name_localizations != null) {
+			const keys = Object.entries(Locale).filter(([, value]) => typeof value === "string").map(([, value]) => value);
+			for (const key of keys) {
+				if (interaction.getNameLocalizations()![key] !== restInteraction.name_localizations[key]) {
+					console.log(interaction.getNameLocalizations()![key], restInteraction.name_localizations[key])
+					return 2;
+				}
+			}
+		}
+		if (interaction.getDescriptionLocalizations() != null && restInteraction.description_localizations == null) return 2
+		if (interaction.getDescriptionLocalizations() == null && restInteraction.description_localizations != null) return 2;
+		if ((interaction.getDescriptionLocalizations() !== restInteraction.description_localizations) && interaction.getDescriptionLocalizations() != null && restInteraction.description_localizations != null) {
+			const keys = Object.entries(Locale).filter(([, value]) => typeof value === "string").map(([, value]) => value);
+			for (const key of keys) {
+				if (interaction.getDescriptionLocalizations()![key] !== restInteraction.description_localizations[key]) {
+					console.log(interaction.getDescriptionLocalizations()![key], restInteraction.description_localizations[key])
+					return 2;
+				}
+			}
+		}
 		if (interaction.getDescription() !== restInteraction.description) return 2;
 		if (interaction.getOptions().length > 0 && restInteraction.options === undefined) return 3;
 		if (restInteraction.options && interaction.getOptions().length !== restInteraction.options.length) return 4;
@@ -294,8 +316,11 @@ export abstract class BaseModule {
 			if (restOption === undefined) return 5;
 			if (option.description !== restOption.description) return 6;
 			if (option.type !== restOption.type) return 7;
-			if (option.required !== restOption.required && (option.required != false && restOption.required != undefined)) return 8;
+			if (option.required != restOption.required && (option.required === true && !restOption.required)) {
+				return 8;
+			}
 			if (option.choices == undefined && restOption.choices == undefined) {continue}
+			if (option.choices == undefined) return 9;
 			if (option.choices.length > 0 && restOption.choices === undefined) return 10;
 			if (option.choices.length !== restOption.choices.length) return 11;
 			for (const choice of option.choices) {
