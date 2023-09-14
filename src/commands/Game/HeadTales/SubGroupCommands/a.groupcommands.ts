@@ -9,7 +9,7 @@ import { FaceSubCommandA } from "./a/face.subcommands";
 /**
  * @description HeadTales command
  * @class HeadTales
- * @extends BaseSubSlashCommand
+ * @extends BaseSubGroupSlashCommand
  */
 export class ASubGroupCommand extends BaseSubGroupSlashCommand {
     constructor() {
@@ -32,9 +32,14 @@ export class ASubGroupCommand extends BaseSubGroupSlashCommand {
      * @returns {Promise<void>}
      */
     async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-        const subCommand = interaction.options.getSubcommand(true);
+        const subCommand = interaction.options.getSubcommand();
+
+        console.log(subCommand);
+
+        console.log(this.getSubCommands());
 
 		for (const sub of this.getSubCommands()) {
+            console.log(sub.getName(), subCommand);
 			if (sub.getName() == subCommand) {
 				await sub.execute(client, interaction);
 				return;

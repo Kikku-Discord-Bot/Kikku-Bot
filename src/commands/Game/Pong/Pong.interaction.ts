@@ -12,6 +12,7 @@ export class PongSlashCommand extends BaseSlashCommand {
 			name: "pong",
 			description: "Pong",
 			options: [],
+			isEnabled: false
 		});
 	}
 

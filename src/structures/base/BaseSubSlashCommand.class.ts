@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SlashCommandBuilder, ApplicationCommandOptionType, APIApplicationCommandOptionChoice, SlashCommandSubcommandBuilder } from "discord.js";
-import { BaseInteraction, SlashCommandOptionType, BaseSlashCommandOptions } from "@src/structures";
+import { BaseSlashCommand, SlashCommandOptionType, BaseSlashCommandOptions } from "@src/structures";
 
 /**
  * @description Base class for sub slash commands
  * @category BaseClass
  */
-export abstract class BaseSubSlashCommand extends BaseInteraction {
+export abstract class BaseSubSlashCommand extends BaseSlashCommand {
 	private subCommand: SlashCommandSubcommandBuilder;
 
 	constructor({ name, description, options, cooldown, isEnabled, permissions, dmAllowed }: BaseSlashCommandOptions) {
-		super(name, description, options, cooldown, isEnabled, permissions);
+		super({ name, description, options, cooldown, isEnabled, permissions, dmAllowed })
 		this.subCommand = new SlashCommandSubcommandBuilder()
 			.setName(this.getName())
 			.setDescription(this.getDescription())

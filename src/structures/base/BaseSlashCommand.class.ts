@@ -263,4 +263,48 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 	public async afterRegistered(client: BaseClient):  Promise<void> {
 		return;
 	}
+
+
+	/**
+	 * @description Return the options of the command
+	 * @returns {SlashCommandOptions[]}
+	 * @example
+	 * // returns []
+	 * command.getOptions();
+	 * @category Getter
+	 * @protected
+	 */
+	public getOptions(): SlashCommandOptions[] {
+		return this.options;
+	}
+
+	/**
+	 * @description Return the options format of the discordAPI with subcommands and subcommandGroups
+	 * @returns {{type: number, name: string, description: string; options: SlashCommandOptions[]}[]}
+	 */
+	public getOptionsSub(): {type: number, name: string, description: string; options: any[] | undefined}[] | undefined {
+		const options: {type: number, name: string, description: string; options: any[] | undefined}[] = [];
+		for (const option of this.subCommandsGroups) {
+			options.push({
+				type: 2,
+				name: option.getName(),
+				description: option.getDescription(),
+				options: option.getOptionsSub(),
+			});
+		}
+
+		for (const option of this.subCommands) {
+			options.push({
+				type: 1,
+				name: option.getName(),
+				description: option.getDescription(),
+				options: option.getOptions(),
+			});
+		}
+		if (options.length > 0) {
+			return options;
+		} else {
+			return undefined;
+		}
+	}
 }

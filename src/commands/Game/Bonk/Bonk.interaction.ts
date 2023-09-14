@@ -23,6 +23,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 					required: true
 				}
 			],
+			isEnabled: false
 		});
 	}
 

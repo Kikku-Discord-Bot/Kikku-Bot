@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { BaseCommand, BaseClient, BaseSlashCommand } from "@src/structures";
+import { BaseCommand, BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/structures";
 import { ButtonBuilder, ActionRowBuilder } from "@discordjs/builders";
 import { ButtonStyle } from "discord.js";
 import { HeadSubCommand } from "./SubCommands/head.subcommands";
@@ -16,7 +16,6 @@ export class HeadTalesCommand extends BaseSlashCommand {
 		super({
 			name: "headtales",
 			description: "HeadTales",
-			options: [],
 			subCommands: [
 				new HeadSubCommand(),
 			],
@@ -34,10 +33,13 @@ export class HeadTalesCommand extends BaseSlashCommand {
 	 * @returns {Promise<void>}
 	 */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-		const subCommand = interaction.options.getSubcommand(true);
-		const subCommandGroup = interaction.options.getSubcommandGroup(true);
+		const subCommand = interaction.options.getSubcommand();
+		const subCommandGroup = interaction.options.getSubcommandGroup();
+
+		console.log(subCommand, subCommandGroup);
 
 		for (const subGroup of this.getSubCommandsGroups()) {
+			console.log(subGroup.getName(), subCommandGroup);
 			if (subGroup.getName() == subCommandGroup) {
 				await subGroup.execute(client, interaction);
 				return;
