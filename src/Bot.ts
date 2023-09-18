@@ -48,7 +48,7 @@ async function main() {
 			//new ModerationModule(),
 		]);
 		console.log("Synchronising database...");
-		await databaseSynchronisation();
+		await databaseSynchronisation(baseClient);
 		console.log("Loading modules...");
 		await baseClient.loadModules();
 		// Load keys

@@ -12,38 +12,38 @@ import { FaceSubCommandA } from "./a/face.subcommands";
  * @extends BaseSubGroupSlashCommand
  */
 export class ASubGroupCommand extends BaseSubGroupSlashCommand {
-    constructor() {
-        super({
-            name: "a",
-            description: "HeadTales",
-            options: [],
-            subCommands: [
-                new HeadSubCommandA(),
-                new FaceSubCommandA(),
-            ]
-        });
-    }
+	constructor() {
+		super({
+			name: "a",
+			description: "HeadTales",
+			options: [],
+			subCommands: [
+				new HeadSubCommandA(),
+				new FaceSubCommandA(),
+			]
+		});
+	}
 
-    /**
+	/**
      * @description Executes the command
      * @param {BaseClient} client
      * @param {Message} message
      * @param {string[]} args
      * @returns {Promise<void>}
      */
-    async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-        const subCommand = interaction.options.getSubcommand();
+	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
+		const subCommand = interaction.options.getSubcommand();
 
-        console.log(subCommand);
+		console.log(subCommand);
 
-        console.log(this.getSubCommands());
+		console.log(this.getSubCommands());
 
 		for (const sub of this.getSubCommands()) {
-            console.log(sub.getName(), subCommand);
+			console.log(sub.getName(), subCommand);
 			if (sub.getName() == subCommand) {
 				await sub.execute(client, interaction);
 				return;
 			}
 		}
-    }
+	}
 }

@@ -1,8 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseCommand, BaseInteraction, BaseClient, BaseSlashCommand } from "@src/structures";
+import * as Sequelize from "sequelize";
 import { Locale, Routes } from "discord.js";
 import fs from "fs";
 import { Exception } from "../exception/exception.class";
+import { type } from "os";
+import { DBConnection } from "../database/dbConnection.db.class";
+
+interface DatabaseFieldSchema {
+	name: string;
+	type: Sequelize.DataType;
+	allowNull?: boolean;
+	defaultValue?: Sequelize.DataType;
+}
+
+interface DatabaseGlobalSchema {
+	fields: Array<DatabaseFieldSchema>;
+	enabled?: boolean;
+	timestamps?: boolean;
+	createdAt?: boolean;
+	updatedAt?: boolean;
+}
+
+interface DatabaseUserSchema {
+	fields: Array<DatabaseFieldSchema>;
+	enabled?: boolean;
+	timestamps?: boolean;
+	createdAt?: boolean;
+	updatedAt?: boolean;
+}
+
+interface DatabaseGuildSchema {
+	fields: Array<DatabaseFieldSchema>;
+	enabled?: boolean;
+	timestamps?: boolean;
+	createdAt?: boolean;
+	updatedAt?: boolean;
+}
+
+interface DatabaseSchemas {
+	globalSchema?: DatabaseGlobalSchema;
+	userSchema?: DatabaseUserSchema;
+	guildSchema?: DatabaseGuildSchema;
+}
 
 /**
  * @description Base class for modules
@@ -16,17 +56,19 @@ export abstract class BaseModule {
 	private description: string;
 	// May need to change this to a Collection<string, BaseCommand> if we want to add more properties to the commands same goes the aliases
 	// private commands: Collection<string, BaseCommand> = new Collection();
-	private commands: Map<string, BaseCommand> = new Map(); 
+	private commands: Map<string, BaseCommand> = new Map();
+	private databaseSchemas?: DatabaseSchemas;
 
 	/**
 	 * @description Creates a new module
 	 * @param name 
 	 * @param isEnabled 
 	 */
-	constructor(name: string, description?: string, isEnabled?: boolean) {
+	constructor(name: string, description?: string, isEnabled?: boolean, databaseSchemas?: DatabaseSchemas ) {
 		this.name = name;
 		this.description = description || "No description provided";
 		this.enabled = isEnabled || true;
+		this.databaseSchemas = databaseSchemas;
 	}
 
 	/**
@@ -115,6 +157,57 @@ export abstract class BaseModule {
 		if (this.aliases.has(name)) return this.aliases.get(name);
 		return undefined;
 	}
+
+
+	/**
+	 * @description Returns the database schemas of the module
+	 * @returns {DatabaseSchemas | undefined}
+	 * @example
+	 * // returns { globalSchema: { fields: [ [Object] ] } }
+	 */
+	public getDatabaseSchemas(): DatabaseSchemas | undefined {
+		return this.databaseSchemas;
+	}
+
+
+	/**
+	 * @description Loads module database schemas into the database
+	 * @param {Sequelize.Sequelize} database
+	 * @example
+	 * // loads module database schemas into the database
+	 * module.loadDatabaseSchemas(database);
+	 * @example
+	 */
+	async loadDatabaseSchemas() {
+		const database = DBConnection.getInstance().sequelize;
+		if (!this.databaseSchemas) return;
+		const schemas = Object.entries(this.databaseSchemas);
+		for (const [schemaName, schema] of schemas) {
+			if (schema.enabled === false) continue;
+			const schemaOptions = {
+				timestamps: schema.timestamps,
+				createdAt: schema.createdAt,
+				updatedAt: schema.updatedAt,
+			}
+
+			const schemaFields: any = {};
+			for (const field of schema.fields) {
+				schemaFields[field.name] = {
+					type: field.type,
+					allowNull: field.nullable ? field.nullable : false,
+				}
+
+				if (field.default !== undefined) {
+					if (typeof field.default !== typeof field.type)
+					throw new Exception(`Default value of field ${field.name} is not of type ${field.type}. In module ${this.name}`);
+					schemaFields[field.name].defaultValue = field.default;
+				}
+			}
+			const schemaModel = database.define(schemaName + "_" + this.getName(), schemaFields, schemaOptions);
+			await schemaModel.sync();
+		}
+	}
+
 
 	/**
 	 * @description Loads commands into the module
@@ -381,10 +474,6 @@ export abstract class BaseModule {
 		if (interaction.getPermissionValue().toString() != restInteraction.default_member_permissions) return 6;
 		return 0;
 	}
-
-
-
-
 
 	/**
 	 * @description Execute the command

@@ -1,6 +1,8 @@
 import { BaseInteraction, BaseEvent, BaseClient } from "@src/structures";
 import { Events, Interaction } from "discord.js"
 import { Exception } from "@src/structures/exception/exception.class";
+import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
+import { t } from "i18next";
 
 /**
  * @description InteractionCreated event
@@ -27,13 +29,15 @@ export class InteractionCreatedEvent extends BaseEvent {
 			const command: BaseInteraction | undefined = module.getInteractions().get(interaction.customId);
 			if (!command) continue;
 			try {
+				await Logger.log(`Command ${command.getName()} was executed by ${interaction.user.tag} (${interaction.user.id})`, LoggerEnum.INFO, true, client);
 				await command.execute(client, interaction);
 			} catch (error: unknown) {
 				if (error instanceof Error)
-					Exception.logToFile(error, true);
+					await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error", true, client);
 				if (!interaction) return;
-				if (interaction.replied) return;
-				if (interaction.deferred) await interaction.editReply({ content: "There was an error while executing this command!"});
+				if (interaction.replied) await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
+				if (interaction.deferred) await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
+				if (!interaction.deferred) await interaction.reply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}), ephemeral: true});
 			}
 		}
 	}

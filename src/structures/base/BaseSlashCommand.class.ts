@@ -178,7 +178,7 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 	 */
 	public addChoices(choices: APIApplicationCommandOptionChoice<string | number>[], optionName: string): void {
 		if (this.slashCommand.options.length == 0) throw new Error("You cannot add choices to a command without options!");
-		for (let option of this.options)
+		for (const option of this.options)
 			if (option.name == optionName) {
 				for (const choice of choices) {
 					if (typeof choice.value != "string" && typeof choice.value != "number")
@@ -195,7 +195,7 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 						else option.choices = [choice as APIApplicationCommandOptionChoice<number>];
 					}
 				}
-		}
+			}
 		this.slashCommand = this.buildSlashCommand(this.dmAllowed || false, this.getPermissionValue(), this.getOptions() || []);
 	}
 
@@ -207,7 +207,7 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 	 */
 	public removeChoices(choices: APIApplicationCommandOptionChoice<string | number>[], optionName: string): void {
 		if (this.slashCommand.options.length == 0) throw new Error("You cannot remove choices from a command without options!");
-		for (let option of this.options)
+		for (const option of this.options)
 			if (option.name == optionName) {
 				for (const choice of choices) {
 					if (typeof choice.value != "string" && typeof choice.value != "number")
@@ -225,12 +225,10 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 			}
 		this.slashCommand = this.buildSlashCommand(this.dmAllowed || false, this.getPermissionValue(), this.getOptions() || []);
 	}
-						 
-
 	
 	public async updateSlashCommand(client: BaseClient): Promise<void> {
 		this.slashCommand = this.buildSlashCommand(this.dmAllowed || false, this.getPermissionValue(), this.getOptions() || []);
-		let restSlashCommands = await client.getBaseRest().get(
+		const restSlashCommands = await client.getBaseRest().get(
 			`/applications/${client.getClientId()}/commands`,
 		) as unknown as any[];
 
