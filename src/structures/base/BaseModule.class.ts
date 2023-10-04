@@ -6,6 +6,8 @@ import fs from "fs";
 import { Exception } from "../exception/exception.class";
 import { type } from "os";
 import { DBConnection } from "../database/dbConnection.db.class";
+import Module from "module";
+import { DatabaseModuleHandler, DatabaseSchemaName } from "../database/ModuleHandler.class";
 
 interface DatabaseFieldSchema {
 	name: string;
@@ -38,10 +40,10 @@ interface DatabaseGuildSchema {
 	updatedAt?: boolean;
 }
 
-interface DatabaseSchemas {
-	globalSchema?: DatabaseGlobalSchema;
-	userSchema?: DatabaseUserSchema;
-	guildSchema?: DatabaseGuildSchema;
+export interface DatabaseSchemas {
+	global?: DatabaseGlobalSchema;
+	user?: DatabaseUserSchema;
+	guild?: DatabaseGuildSchema;
 }
 
 /**
@@ -54,6 +56,7 @@ export abstract class BaseModule {
 	private aliases: Map<string, BaseCommand> = new Map();
 	private enabled: boolean;
 	private description: string;
+	private databaseHandler: DatabaseModuleHandler;
 	// May need to change this to a Collection<string, BaseCommand> if we want to add more properties to the commands same goes the aliases
 	// private commands: Collection<string, BaseCommand> = new Collection();
 	private commands: Map<string, BaseCommand> = new Map();
@@ -69,6 +72,7 @@ export abstract class BaseModule {
 		this.description = description || "No description provided";
 		this.enabled = isEnabled || true;
 		this.databaseSchemas = databaseSchemas;
+		this.databaseHandler = new DatabaseModuleHandler(this.name);
 	}
 
 	/**
@@ -97,6 +101,15 @@ export abstract class BaseModule {
 	 */
 	public getDescription(): string {
 		return this.description;
+	}
+
+
+	/**
+	 * @description Returns the database handler of the module
+	 * @returns {DatabaseModuleHandler}
+	 */
+	public getDatabaseHandler(): DatabaseModuleHandler {
+		return this.databaseHandler;
 	}
 
 	/**
@@ -203,7 +216,22 @@ export abstract class BaseModule {
 					schemaFields[field.name].defaultValue = field.default;
 				}
 			}
-			const schemaModel = database.define(schemaName + "_" + this.getName(), schemaFields, schemaOptions);
+			if (schemaName === "user") {
+				schemaFields["userId"] = {
+					type: Sequelize.DataTypes.STRING,
+					allowNull: false,
+				}
+			}
+
+			if (schemaName === "guild") {
+				schemaFields["guildId"] = {
+					type: Sequelize.DataTypes.STRING,
+					allowNull: false,
+				}
+			}
+			const realSchemaName = this.databaseHandler.getSchemaName(schemaName);
+			const schemaModel = database.define(realSchemaName + "_" + this.getName(), schemaFields, schemaOptions);
+			this.databaseHandler.setSchema(realSchemaName, schemaModel);
 			await schemaModel.sync();
 		}
 	}
@@ -498,6 +526,4 @@ export abstract class BaseModule {
 			message.reply("there was an error trying to execute that command!");
 		}
 	}
-
-
 }

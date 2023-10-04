@@ -29,5 +29,17 @@ export class HeadSubCommand extends BaseSubSlashCommand {
 			content: "Head",
 			ephemeral: true,
 		});
+		const moduleGame = client.getModule("Game");
+		const moduleGameHandler = moduleGame.getDatabaseHandler();
+
+
+		const UsersRow = await moduleGameHandler.getRowsOfUser(interaction.user.id);
+		console.log(UsersRow);
+		if (!UsersRow || UsersRow.length === 0) {
+			console.log("create");
+			await moduleGameHandler.createRowUser({ userId: interaction.user.id, numberOfHead: 0});
+		}
+
+		
 	}
 }

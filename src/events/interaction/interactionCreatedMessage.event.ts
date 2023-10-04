@@ -47,9 +47,15 @@ export class InteractionCreatedEvent extends BaseEvent {
 				if (error instanceof Error)
 					await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error", true, client);
 				if (!interaction) return;
-				if (interaction.replied) await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
-				if (interaction.deferred) await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
-				if (!interaction.deferred) await interaction.reply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}), ephemeral: true});
+				if (interaction.replied) {
+					console.log( t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}));
+					await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
+					return;
+				} 
+				if (interaction.deferred)
+					await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
+				else
+					await interaction.reply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}), ephemeral: true});
 			}
 		}
 	}

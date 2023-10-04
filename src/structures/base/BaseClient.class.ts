@@ -45,6 +45,23 @@ export class BaseClient extends Client {
 	}
 
 	/**
+	 * @description Returns a module of the client
+	 * @param {string} name
+	 * @returns {BaseModule}
+	 * @example
+	 * // returns a module of the client
+	 * client.getModule("Game");
+	 * @throws {Error} If the module is not found
+	 * @throws {Error} If the module name is not a string
+	 */
+	public getModule(name: string): BaseModule {
+		if (typeof name !== "string") throw new Error(`The module name ${name} is not a string`);
+		const module = this.modules.get(name);
+		if (!module) throw new Error(`The module ${name} is not found`);
+		return module;
+	}
+
+	/**
 	 * @description Returns the author id
 	 * @returns {string}
 	 * @example

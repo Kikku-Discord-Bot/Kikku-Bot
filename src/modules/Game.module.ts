@@ -4,7 +4,7 @@ import * as Sequelize from "sequelize";
 export class GameModule extends BaseModule {
 	constructor() {
 		super("Game", "1.0.0", true, {
-			globalSchema: {
+			global: {
 				fields: [
 					{
 						name: "test",
@@ -12,7 +12,16 @@ export class GameModule extends BaseModule {
 						allowNull: false,
 					},
 				],
-			}
+			},
+			user: {
+				fields: [
+					{
+						name: "numberOfHead",
+						type: Sequelize.DataTypes.STRING,
+						allowNull: false,
+					},
+				],
+			},
 		});
 	}
 }
