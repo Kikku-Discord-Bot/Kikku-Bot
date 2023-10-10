@@ -14,6 +14,11 @@ export abstract class BaseSubGroupSlashCommand extends BaseSlashCommand {
 		this.subGroup = new SlashCommandSubcommandGroupBuilder()
 			.setName(this.getName())
 			.setDescription(this.getDescription())
+
+
+		for (const subCommand of this.getSubCommands()) {
+			this.subGroup.addSubcommand(subCommand.getSubSlashCommand());
+		}
 	}
 
 	/**

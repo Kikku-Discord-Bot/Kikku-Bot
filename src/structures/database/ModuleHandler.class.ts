@@ -1,4 +1,3 @@
-import { ConnectionVisibility } from "discord.js";
 import Sequelize, { CreateOptions, Optional, WhereOptions } from "sequelize";
 
 export type SequelizeModel = Sequelize.ModelStatic<Sequelize.Model<any, any>>;

@@ -36,8 +36,6 @@ export class HeadTalesCommand extends BaseSlashCommand {
 		const subCommand = interaction.options.getSubcommand();
 		const subCommandGroup = interaction.options.getSubcommandGroup();
 
-		console.log(subCommand, subCommandGroup);
-
 		for (const subGroup of this.getSubCommandsGroups()) {
 			console.log(subGroup.getName(), subCommandGroup);
 			if (subGroup.getName() == subCommandGroup) {

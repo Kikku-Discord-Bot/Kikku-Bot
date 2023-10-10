@@ -18,13 +18,13 @@ export abstract class BaseSubSlashCommand extends BaseSlashCommand {
 		for (const option of options || []) {
 			if (!option.choices) {
 				if (option.type == SlashCommandOptionType.STRING)
-					this.subCommand.addStringOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
+					this.subCommand.addStringOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false).setAutocomplete(option.autocomplete || false));
 				else if (option.type == SlashCommandOptionType.USER)
 					this.subCommand.addUserOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.CHANNEL)
 					this.subCommand.addChannelOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.INTEGER)
-					this.subCommand.addIntegerOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
+					this.subCommand.addIntegerOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false).setAutocomplete(option.autocomplete || false));
 				else if (option.type == SlashCommandOptionType.ROLE)
 					this.subCommand.addRoleOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.BOOLEAN)
@@ -38,7 +38,8 @@ export abstract class BaseSubSlashCommand extends BaseSlashCommand {
 						opt.setName(option.name).
 							setDescription(option.description).
 							setRequired(option.required || false).
-							setChoices(...option.choices as APIApplicationCommandOptionChoice<string>[]))
+							setChoices(...option.choices as APIApplicationCommandOptionChoice<string>[])
+							.setAutocomplete(option.autocomplete || false))
 				} else if (option.type == SlashCommandOptionType.USER)
 					throw new Error("User options cannot have choices!");
 				else if (option.type == SlashCommandOptionType.CHANNEL)
@@ -51,7 +52,8 @@ export abstract class BaseSubSlashCommand extends BaseSlashCommand {
 						opt.setName(option.name).
 							setDescription(option.description).
 							setRequired(option.required || false).
-							setChoices(...option.choices as APIApplicationCommandOptionChoice<number>[]))
+							setChoices(...option.choices as APIApplicationCommandOptionChoice<number>[])
+							.setAutocomplete(option.autocomplete || false))
 				} else if (option.type == SlashCommandOptionType.ROLE)
 					throw new Error("Role options cannot have choices!");
 				else if (option.type == SlashCommandOptionType.BOOLEAN)

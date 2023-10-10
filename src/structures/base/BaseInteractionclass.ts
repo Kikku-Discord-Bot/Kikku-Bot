@@ -1,7 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Interaction } from "discord.js";
+import { Interaction, LocalizationMap } from "discord.js";
 import { BaseClient } from "@src/structures";
+
+export interface BaseInteractionOptions {
+	name: string;
+	description: string;
+	nameLocalisation?: LocalizationMap,
+	descriptionLocalisation?: LocalizationMap
+	options?: any;
+	cooldown?: number;
+	isEnabled?: boolean;
+	permissions?: bigint[];
+}
 
 /**
  * @description Base class for slash commands
@@ -16,7 +27,7 @@ export abstract class BaseInteraction  {
 	private permissions: bigint[];
 	private module = "";
 
-	constructor(name: string, description: string, options?: any, cooldown?: number, isEnabled?: boolean, permissions?: bigint[]) {
+	constructor({ name, description, options, isEnabled, cooldown, permissions }: BaseInteractionOptions) {
 		this.name = name;
 		this.description = description;
 		this.options = options || [];

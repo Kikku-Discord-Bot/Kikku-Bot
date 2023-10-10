@@ -34,10 +34,6 @@ export class ASubGroupCommand extends BaseSubGroupSlashCommand {
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
 		const subCommand = interaction.options.getSubcommand();
 
-		console.log(subCommand);
-
-		console.log(this.getSubCommands());
-
 		for (const sub of this.getSubCommands()) {
 			console.log(sub.getName(), subCommand);
 			if (sub.getName() == subCommand) {

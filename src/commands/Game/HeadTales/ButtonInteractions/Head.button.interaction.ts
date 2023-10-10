@@ -9,7 +9,10 @@ import { ButtonInteraction } from "discord.js";
  */
 export class HeadButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("head", "Head button interaction", "Test", 0, true, []);
+		super({
+			name: "head",
+			description: "Head button interaction"
+		});
 	}
 
 	/**

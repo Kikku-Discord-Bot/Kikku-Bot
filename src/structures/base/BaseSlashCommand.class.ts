@@ -19,6 +19,7 @@ export interface SlashCommandOptions {
 	type: SlashCommandOptionType;
 	required?: boolean;
 	choices?: { name: string, value: string | number }[];
+	autocomplete?: boolean;
 }
 
 export interface BaseSlashCommandOptions {
@@ -49,7 +50,7 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 	private dmAllowed: boolean | null = false;
 
 	constructor({ name, nameLocalisation, description, descriptionLocalisation, options, subCommands, subCommandsGroups, cooldown, isEnabled, permissions, dmAllowed }: BaseSlashCommandOptions) {
-		super(name, description, options, cooldown, isEnabled, permissions);
+		super({name, description, options, cooldown, isEnabled, permissions});
 		const bitField = permissions?.reduce((a, b) => a | b, BigInt(0)) || BigInt(1);
 		
 		this.nameLocalizations = nameLocalisation || null;
@@ -81,13 +82,13 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 		for (const option of options || []) {
 			if (!option.choices) {
 				if (option.type == SlashCommandOptionType.STRING)
-					this.slashCommand.addStringOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
+					this.slashCommand.addStringOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false).setAutocomplete(option.autocomplete || false));
 				else if (option.type == SlashCommandOptionType.USER)
 					this.slashCommand.addUserOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.CHANNEL)
 					this.slashCommand.addChannelOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.INTEGER)
-					this.slashCommand.addIntegerOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
+					this.slashCommand.addIntegerOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false).setAutocomplete(option.autocomplete || false));
 				else if (option.type == SlashCommandOptionType.ROLE)
 					this.slashCommand.addRoleOption(opt => opt.setName(option.name).setDescription(option.description).setRequired(option.required || false));
 				else if (option.type == SlashCommandOptionType.BOOLEAN)
@@ -101,7 +102,8 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 						opt.setName(option.name).
 							setDescription(option.description).
 							setRequired(option.required || false).
-							setChoices(...option.choices as APIApplicationCommandOptionChoice<string>[]))
+							setChoices(...option.choices as APIApplicationCommandOptionChoice<string>[])
+							.setAutocomplete(option.autocomplete || false))
 				} else if (option.type == SlashCommandOptionType.USER)
 					throw new Error("User options cannot have choices!");
 				else if (option.type == SlashCommandOptionType.CHANNEL)
@@ -114,7 +116,8 @@ export abstract class BaseSlashCommand extends BaseInteraction {
 						opt.setName(option.name).
 							setDescription(option.description).
 							setRequired(option.required || false).
-							setChoices(...option.choices as APIApplicationCommandOptionChoice<number>[]))
+							setChoices(...option.choices as APIApplicationCommandOptionChoice<number>[])
+							.setAutocomplete(option.autocomplete || false))
 				} else if (option.type == SlashCommandOptionType.ROLE)
 					throw new Error("Role options cannot have choices!");
 				else if (option.type == SlashCommandOptionType.BOOLEAN)

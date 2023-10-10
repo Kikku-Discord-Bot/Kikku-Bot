@@ -19,7 +19,7 @@ export interface BaseCommandOptions {
 /**
  * @description Base class for commands
  * @category BaseClass
- * @deprecated Use BaseSlashCommand instead
+ * @deprecated Use BaseSlashCommand instead, this will be removed when slash commands are fully implemented
  */
 export abstract class BaseCommand {
 	private name: string;

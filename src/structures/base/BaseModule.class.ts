@@ -441,8 +441,10 @@ export abstract class BaseModule {
 		const isOptionsChanged = (interaction: BaseSlashCommand, restInteraction: any): boolean => {
 			if (interaction.getOptions().length > 0 && restInteraction.options === undefined) return true;
 			if (interaction.getOptions().length === 0 && restInteraction.options !== undefined && interaction.getOptionsSub() === undefined) return true;
-			if (interaction.getOptionsSub() !== undefined && (interaction.getOptionsSub()!.length === restInteraction.options.length)) {
-				return isSubCommandsChanged(interaction, restInteraction);
+			if (restInteraction.options !== undefined) {
+				if (interaction.getOptionsSub() !== undefined && (interaction.getOptionsSub()!.length === restInteraction.options.length)) {
+					return isSubCommandsChanged(interaction, restInteraction);
+				}
 			}
 			if (restInteraction.options !== undefined && interaction.getOptions().length !== restInteraction.options.length) return true;
 			for (const option of interaction.getOptions()) {
@@ -450,6 +452,7 @@ export abstract class BaseModule {
 				if (restOption === undefined) return true;
 				if (option.description !== restOption.description) return true;
 				if (option.type !== restOption.type) return true;
+				if (option.autocomplete !== restOption.autocomplete) return true;
 				if (option.required != restOption.required && (option.required === true && !restOption.required)) {
 					return true;
 				}
@@ -461,6 +464,7 @@ export abstract class BaseModule {
 					const restChoice = restOption.choices.find((c: any) => c.name === choice.name);
 					if (restChoice === undefined) return true;
 					if (choice.value !== restChoice.value) return true;
+					if (choice.name !== restChoice.name) return true;
 				}
 			}
 			return false;
@@ -473,22 +477,23 @@ export abstract class BaseModule {
 				if (restOption === undefined) return true;
 				if (option.description !== restOption.description) return true;
 				if (option.type !== restOption.type) return true;
+				let subCommandStatus = false;
 				if (option.type === 1) {
-					interaction.getSubCommands().forEach(subCommand => {
-						if (isOptionsChanged(subCommand, restOption)) {
-							console.log(subCommand.getName(), restOption.name)
-							return true;
-						}
-					});
+					const subCommand = interaction.getSubCommands().find((s: any) => s.name === option.name);
+					if (subCommand === undefined) return true;
+					if (isOptionsChanged(subCommand, restOption)) {
+						return true;
+					}
 				}
+				if (subCommandStatus) return true;
 				if (option.type === 2) {
-					interaction.getSubCommandsGroups().forEach(subCommandGroup => {
-						if (isOptionsChanged(subCommandGroup, restOption)) {
-							console.log(subCommandGroup.getName(), restOption.name)
-							return true;
-						}
-					});
+					const subCommandGroup = interaction.getSubCommandsGroups().find((s: any) => s.name === option.name);
+					if (subCommandGroup === undefined) return true;
+					if (isOptionsChanged(subCommandGroup, restOption)) {
+						return true;
+					}
 				}
+				if (subCommandStatus) return true;
 			}
 			return false;
 		}
