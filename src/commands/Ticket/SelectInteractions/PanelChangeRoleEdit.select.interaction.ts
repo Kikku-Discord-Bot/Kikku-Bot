@@ -9,7 +9,7 @@ import { EmbedBuilder, RoleSelectMenuInteraction} from "discord.js";
  */
 export class PanelChangeRoleInteraction extends BaseInteraction {
 	constructor() {
-		super("panelroleedit", "Change the role for the ticket panel");
+		super({name: "panelroleedit", description: "Change the role for the ticket panel"});
 	}
 
 	/**

@@ -10,7 +10,11 @@ import { Logger } from "@src/structures/logger/logger.class";
  */
 export class TicketCreateCommand extends BaseCommand {
 	constructor() {
-		super("ticketcreate", ["tc"], "Create a ticket", "Tickets", 0, true, []);
+		super({
+			name: "ticketcreate", 
+			aliases: ["tc"], 
+			description: "Create a ticket",
+		});
 	}
 
 	/**

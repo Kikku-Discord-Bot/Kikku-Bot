@@ -8,7 +8,7 @@ import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket
  */
 export class PanelChangeTranscriptInteraction extends BaseInteraction {
 	constructor() {
-		super("paneltranscript", "Change the role for the ticket panel");
+		super({name: "paneltranscript", description: "Change the role for the ticket panel"});
 	}
 
 	/**

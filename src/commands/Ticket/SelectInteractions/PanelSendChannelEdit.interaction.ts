@@ -8,7 +8,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelSendChannelInteraction extends BaseInteraction {
 	constructor() {
-		super("panelsendchanneledit", "Change the role for the ticket panel");
+		super({name: "panelsendchanneledit", description: "Change the role for the ticket panel"});
 	}
 
 	/**

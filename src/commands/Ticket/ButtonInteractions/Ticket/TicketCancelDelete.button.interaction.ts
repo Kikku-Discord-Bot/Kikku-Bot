@@ -10,7 +10,7 @@ import { ChatInputCommandInteraction } from "discord.js";
  */
 export class TicketCancelDeleteButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketcanceldelete", "Delete a ticket");
+		super({name: "ticketcanceldelete", description: "Delete a ticket"});
 	}
 
 	/**
