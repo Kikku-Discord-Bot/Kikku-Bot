@@ -8,9 +8,9 @@ export class LoggerEnum {
 	static INFO = "info";
 	static DEBUG = "debug";
 	static ERROR = "error";
-     static USER = "user";
-     static BOAT = "boat";
-     static FDD = "fdd";
+	static USER = "user";
+	static BOAT = "boat";
+	static FDD = "fdd";
 }
 
 /*
@@ -21,11 +21,11 @@ export class Logger {
 	static infoFile = "info.log";
 	static debugFile = "debug.log";
 	static errorFile = "error.log";
-     static userFile = "user.log";
-     static boatFile = "boat.log";
-     static fddFile = "fdd.log";
+	static userFile = "user.log";
+	static boatFile = "boat.log";
+	static fddFile = "fdd.log";
 	static pathToLog = "./logs/";
-     static logChannelId = "1143636703307894844"
+	static logChannelId = "1143636703307894844"
 	/**
      * @description Logs a message to the console
      * @param {string} message
@@ -42,26 +42,26 @@ export class Logger {
      * // => [2021-01-01 00:00:00] [ERROR] Hello world!
      */
 
-	static async log(message: string, type?: string, toFile: boolean = true, client: BaseClient | undefined = undefined): Promise<void> {
+	static async log(message: string, type?: string, toFile = true, client: BaseClient | undefined = undefined): Promise<void> {
 		const date  = new Date();
-          const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-          const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-          const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
-          const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-          const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
-          const year = date.getFullYear();
+		const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+		const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+		const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
+		const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+		const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+		const year = date.getFullYear();
 
-          const dateString = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-          if (type) message = `[${dateString}] [${type.toUpperCase()}] ${message}`;
-          if (client) {
-               if (type === LoggerEnum.INFO || type === LoggerEnum.ERROR) {
-                    const channel = client.channels.cache.get(await Logger.logChannelId)
-                    if (channel && channel instanceof TextChannel) {
-                         await channel.send(message);
-                    }
-               }
-          }
-          else message = `[${dateString}] [LOG] ${message}`;
+		const dateString = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+		if (type) message = `[${dateString}] [${type.toUpperCase()}] ${message}`;
+		if (client) {
+			if (type === LoggerEnum.INFO || type === LoggerEnum.ERROR) {
+				const channel = client.channels.cache.get(await Logger.logChannelId)
+				if (channel && channel instanceof TextChannel) {
+					await channel.send(message);
+				}
+			}
+		}
+		else message = `[${dateString}] [LOG] ${message}`;
 		console.log(`${message}`);
 
 		if (toFile)

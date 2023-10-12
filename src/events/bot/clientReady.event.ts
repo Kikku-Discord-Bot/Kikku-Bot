@@ -23,7 +23,7 @@ export class ReadyEvent extends BaseEvent {
 	async execute(client: BaseClient): Promise<void> {
 		console.log(`Logged in as ${client.user?.tag}`);
 
-		let statusIndex = 0;
+		const statusIndex = 0;
 		const { VERSION, BOT_NAME } = client.getKeys();
 		const status = `${BOT_NAME ? BOT_NAME : "?"} v${VERSION ? VERSION : "?"}`; // You can change the status here
 		const activity = { 

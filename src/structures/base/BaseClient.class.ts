@@ -135,7 +135,7 @@ export class BaseClient extends Client {
 	 */
 	async loadModules(): Promise<void> {
 		let restSlashCommands = await this.baseRest.get(
-			`/applications/${this.clientId}/commands`,
+			`/applications/${this.clientId}/commands?with_localizations=true`,
 		) as any[];
 		let hasChanged = false;
 		const registeredSlashCommand = [];
@@ -147,7 +147,7 @@ export class BaseClient extends Client {
 			if (hasChanged) {
 				//console.log(restSlashCommands);
 				restSlashCommands = await this.baseRest.get(
-					`/applications/${this.clientId}/commands`,
+					`/applications/${this.clientId}/commands?with_localizations=true`,
 				) as any[];
 			}
 

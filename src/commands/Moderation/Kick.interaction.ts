@@ -11,20 +11,25 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class MuteSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("kick", "Kick a member", [
-			{
-				name: "member",
-				description: "The member to kick",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "reason",
-				description: "The reason for the kick",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			}
-		], 0, true, [PermissionFlagsBits.KickMembers]);
+		super({
+			name: "kick", 
+			description: "Kick a member", 
+			options: [
+				{
+					name: "member",
+					description: "The member to kick",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "reason",
+					description: "The reason for the kick",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				}
+			],
+			permissions: [PermissionFlagsBits.KickMembers],
+		})
 	}
 
 	/**

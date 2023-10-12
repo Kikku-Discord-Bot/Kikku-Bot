@@ -10,7 +10,7 @@ import { ModalSubmitInteraction } from "discord.js";
  */
 export class TicketOpenButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("panelnamemodaledit", "Change panel name");
+		super({name: "panelnamemodaledit", description: "Change panel name"});
 	}
 
 	/**

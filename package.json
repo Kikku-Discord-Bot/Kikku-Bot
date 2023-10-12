@@ -1,17 +1,19 @@
 {
-  "name": "Faucheuse",
+  "name": "kikku-bot",
   "version": "1.0.0",
   "description": "",
   "main": "src/Bot.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -q ./src/Bot.ts",
+    "build": "tsc",
     "start": "ts-node src/Bot.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.5.1",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "i18next": "^23.4.9",
@@ -26,7 +28,6 @@
     "eslint": "^8.39.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typedoc": "^0.24.8",
     "typescript": "^5.0.4"
   }
 }

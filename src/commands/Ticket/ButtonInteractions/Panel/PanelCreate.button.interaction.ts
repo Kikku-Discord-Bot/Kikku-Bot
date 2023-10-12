@@ -10,7 +10,7 @@ import { Exception } from "@src/structures/exception/exception.class";
  */
 export class PanelCreateInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelcreate", "Create a ticket panel");
+		super({name: "ticketpanelcreate", description: "Create a ticket panel"});
 	}
 
 	/**

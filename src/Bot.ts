@@ -6,6 +6,8 @@ import databaseSynchronisation from "./structures/database/sync.db";
 import { DBConnection } from "./structures/database/dbConnection.db.class";
 import { TicketModule } from "./modules/Ticket.module";
 import { ModerationModule } from "./modules/Moderation.module";
+import { WaifuModule } from "./modules/Waifu.module";
+import "./i18n/config";
 
 dotenv.config();
 
@@ -44,6 +46,7 @@ async function main() {
 		console.log("Adding modules...");
 		baseClient.addModules([
 			new GameModule(),
+			new WaifuModule()
 			//new TicketModule(),
 			//new ModerationModule(),
 		]);

@@ -9,7 +9,7 @@ import { TicketSetupPanelCommand } from "../../TicketSetupPanel.interaction";
  */
 export class PanelChangeDescriptionInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelfinish", "Create a ticket panel");
+		super({name: "ticketpanelfinish", description: "Create a ticket panel"});
 	}
 
 	/**

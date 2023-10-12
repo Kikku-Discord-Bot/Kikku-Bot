@@ -54,8 +54,10 @@ export class InteractionCreatedEvent extends BaseEvent {
 				} 
 				if (interaction.deferred)
 					await interaction.editReply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`})});
-				else
+				else {
+					console.log( t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}));
 					await interaction.reply({ content: t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}), ephemeral: true});
+				}
 			}
 		}
 	}

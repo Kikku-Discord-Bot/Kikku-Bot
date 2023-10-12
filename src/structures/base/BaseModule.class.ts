@@ -13,7 +13,7 @@ interface DatabaseFieldSchema {
 	name: string;
 	type: Sequelize.DataType;
 	allowNull?: boolean;
-	defaultValue?: Sequelize.DataType;
+	defaultValue?: unknown;
 }
 
 interface DatabaseGlobalSchema {
@@ -51,6 +51,7 @@ export interface DatabaseSchemas {
  * @category BaseClass
  */
 export abstract class BaseModule {
+
 	private name: string;
 	private interactions: Map<string, BaseInteraction> = new Map();
 	private aliases: Map<string, BaseCommand> = new Map();
@@ -207,13 +208,11 @@ export abstract class BaseModule {
 			for (const field of schema.fields) {
 				schemaFields[field.name] = {
 					type: field.type,
-					allowNull: field.nullable ? field.nullable : false,
+					allowNull: field.allowNull ? field.allowNull : false,
 				}
 
-				if (field.default !== undefined) {
-					if (typeof field.default !== typeof field.type)
-					throw new Exception(`Default value of field ${field.name} is not of type ${field.type}. In module ${this.name}`);
-					schemaFields[field.name].defaultValue = field.default;
+				if (field.defaultValue !== undefined) {
+					schemaFields[field.name].defaultValue = field.defaultValue;
 				}
 			}
 			if (schemaName === "user") {
@@ -325,7 +324,7 @@ export abstract class BaseModule {
 				continue;
 			}
 			this.printChangement(statusIsChanged);
-			//toRegister.push(interaction.getSlashCommand().toJSON());
+			toRegister.push(interaction.getSlashCommand().toJSON());
 		}
 		
 		if (toRegister.length === 0) {
@@ -477,7 +476,7 @@ export abstract class BaseModule {
 				if (restOption === undefined) return true;
 				if (option.description !== restOption.description) return true;
 				if (option.type !== restOption.type) return true;
-				let subCommandStatus = false;
+				const subCommandStatus = false;
 				if (option.type === 1) {
 					const subCommand = interaction.getSubCommands().find((s: any) => s.name === option.name);
 					if (subCommand === undefined) return true;

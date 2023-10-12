@@ -8,7 +8,7 @@ import { ButtonInteraction, TextInputStyle, TextInputBuilder, ModalActionRowComp
  */
 export class PanelChangeDescriptionInteraction extends BaseInteraction {
 	constructor() {
-		super("panelchangedescriptionedit", "Create a ticket panel");
+		super({name: "panelchangedescriptionedit", description: "Create a ticket panel"});
 	}
 
 	/**
