@@ -1,7 +1,6 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
 import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Colors, Embed, EmbedBuilder } from "discord.js";
 import { Jikan } from "./Utils/Jikan.class.handler";
-import { WaifuModule } from "@src/modules/Waifu.module";
 
 /**
  * @description Open the main menu

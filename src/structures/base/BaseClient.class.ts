@@ -2,6 +2,7 @@
 import { Client, REST } from "discord.js";
 import { BaseModule } from "@src/structures";
 import eventLoader from "@events/loader"
+import * as fs from "fs";
 
 /**
  * @description Base class for client
@@ -125,15 +126,48 @@ export class BaseClient extends Client {
 			this.addModule(module);
 		});
 	}
-	
+
+
 	/**
 	 * @description Load the modules of the client
 	 * @returns {Promise<void>}
 	 * @example
 	 * // load the modules of the client
 	 * client.loadModules();
+	 * @throws {Error} If the module is not an instance of BaseModule
+	 * @throws {Error} If the module name is not a string
+	 * @throws {Error} If the module already exists
 	 */
-	async loadModules(): Promise<void> {
+	async loadModules(path: string, options: {name: string, isActive: boolean}[] = []): Promise<void> {
+		const modulesFiles = await fs.promises.readdir(path);
+		for (const file of modulesFiles) {
+			const lstat = await fs.promises.lstat(`${path}/${file}`);
+			if (!file.endsWith(".module.ts") || !lstat.isFile()) continue;
+			const module = await import(`${path}/${file}`);
+			const moduleInstance = new module[Object.keys(module)[0]]();
+			if (!(moduleInstance instanceof BaseModule)) 
+				throw new Error(`The module ${moduleInstance} is not an instance of BaseModule`);
+			if (this.modules.has(moduleInstance.getName()))
+				throw new Error(`The module ${moduleInstance.getName()} already exists`);
+			const option = options.find((option) => option.name === moduleInstance.getName());
+			if (option && option.isActive === false) {
+				console.log(`The module ${moduleInstance.getName()} is not active, skipping...`);
+				continue
+			}
+			console.log(`Module ${moduleInstance.getName()} added`);
+			this.modules.set(moduleInstance.getName(), moduleInstance);
+		}
+	}
+
+	
+	/**
+	 * @description Load the commands of the modules of the client
+	 * @returns {Promise<void>}
+	 * @example
+	 * // load the commands of the  modules of the client
+	 * client.loadModules();
+	 */
+	async loadModulesCommands(): Promise<void> {
 		let restSlashCommands = await this.baseRest.get(
 			`/applications/${this.clientId}/commands?with_localizations=true`,
 		) as any[];
