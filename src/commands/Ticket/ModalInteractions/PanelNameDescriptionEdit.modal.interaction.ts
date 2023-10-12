@@ -10,7 +10,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class TicketOpenButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("paneldescriptionmodaledit", "Change panel name");
+		super({name: "paneldescriptionmodaledit", description: "Change panel name"});
 	}
 
 	/**

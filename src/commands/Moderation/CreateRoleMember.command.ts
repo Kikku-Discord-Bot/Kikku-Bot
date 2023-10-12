@@ -12,8 +12,13 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class CreateRoleMemberCommand extends BaseCommand {
 	constructor() {
-		super("createrolemember", ["createrm"], "Create a role member", "Moderation", 0, true, []);
+		super({
+			name: "createrolemember", 
+			aliases: ["createrm"], 
+			description: "Create a role member", 
+		});
 	}
+
 
 	/**
      * @description Executes the command

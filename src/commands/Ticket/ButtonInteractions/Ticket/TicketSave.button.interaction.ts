@@ -10,7 +10,7 @@ import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket
  */
 export class TicketSaveButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketsave", "Save transcript of a ticket");
+		super({name: "ticketsave", description: "Save transcript of a ticket"});
 	}
 
 	/**

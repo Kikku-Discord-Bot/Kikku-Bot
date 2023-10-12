@@ -9,7 +9,11 @@ import { Message } from "discord.js";
  */
 export class TicketRemoveUserCommand extends BaseCommand {
 	constructor() {
-		super("ticketremoveuser", ["tru"], "Remove user from ticket", "Tickets", 0, true, []);
+		super({
+			name: "ticketremoveuser", 
+			aliases: ["tru"], 
+			description: "Remove user from ticket"
+		});
 	}
 
 	/**

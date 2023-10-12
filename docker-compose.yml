@@ -28,5 +28,6 @@ services:
             TENOR_API_KEY: ${TENOR_API_KEY}
         volumes:
             - ./src:/app/src
+            - .:/app/.
         depends_on:
             - db

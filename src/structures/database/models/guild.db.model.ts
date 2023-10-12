@@ -12,9 +12,6 @@ export const GuildModel = sequelize.define(
 		name: {
 			type: Sequelize.STRING,
 		},
-		memberRoleId: {
-			type: Sequelize.STRING,
-		},
 	}
 );
 

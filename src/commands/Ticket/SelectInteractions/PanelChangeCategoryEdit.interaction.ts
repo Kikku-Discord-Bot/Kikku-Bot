@@ -9,7 +9,7 @@ import { EmbedBuilder, ChannelSelectMenuInteraction} from "discord.js";
  */
 export class PanelChangeCategoryInteraction extends BaseInteraction {
 	constructor() {
-		super("panelcategoryedit", "Change the role for the ticket panel");
+		super({name: "panelcategoryedit", description: "Change the role for the ticket panel"});
 	}
 
 	/**

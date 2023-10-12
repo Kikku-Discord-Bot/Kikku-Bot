@@ -9,7 +9,7 @@ import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder, ButtonBuilde
  */
 export class PanelCategoryInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelcategory", "Setup category for ticket panel");
+		super({name: "ticketpanelcategory", description: "Setup category for ticket panel"});
 	}
 
 	/**

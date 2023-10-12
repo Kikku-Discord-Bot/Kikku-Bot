@@ -11,7 +11,7 @@ import { TicketHandler } from "@src/structures/database/handler/ticket.handler.c
  */
 export class PanelDeleteTicketsInteraction extends BaseInteraction {
 	constructor() {
-		super("paneldeletetickets", "Delete a ticket panel");
+		super({name: "paneldeletetickets", description: "Delete a ticket panel"});
 	}
 
 	/**

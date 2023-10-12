@@ -17,17 +17,27 @@ export class Exception extends Error {
 		super(message);
 		this.name = this.constructor.name;
 		this.user = user;
+
+		Logger.log(this.messageToString(this.message), LoggerEnum.ERROR, true);
+		console.log(this.stack);
+	}
+
+	public static getErrorMessageLogFormat(message: string, stack: any, user: { id: string, name: string } | null = null): string {
+		const stackSplit = stack.split("\n");
+		let firstStack = "";
+		if (stackSplit)
+			firstStack = stackSplit[2].trim();
+		if (user) return `${this.name} for user ${user.name}(${user.id}) in ${firstStack}: ${message}`;
+		return `${this.name} in file ${firstStack}: ${message}`;
 	}
     
 	public messageToString(message?: string): string {
-		const date  = new Date();
-		const dateString = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 		const stackSplit = this.stack?.split("\n");
 		let firstStack = "";
 		if (stackSplit)
 			firstStack = stackSplit[2].trim();
-		if (this.user) return `${dateString} ${this.name} for user ${this.user.name}(${this.user.id}) in ${firstStack}: ${message ? message : this.message}`;
-		return `${dateString} ${this.name} in file ${firstStack}: ${message ? message : this.message}`;
+		if (this.user) return `${this.name} for user ${this.user.name}(${this.user.id}) in ${firstStack}: ${message ? message : this.message}`;
+		return `${this.name} in file ${firstStack}: ${message ? message : this.message}`;
 	}
 
 	public messageToJSON(): object {
@@ -39,50 +49,27 @@ export class Exception extends Error {
 	}
 
 	public logToConsoleAndExit(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR);
+		Logger.log(this.toString(), LoggerEnum.ERROR, true);
 		process.exit(1);
 	}
 
 	public logToConsoleAndThrow(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR);
+		Logger.log(this.toString(), LoggerEnum.ERROR, true);
 		throw this;
 	}
 
 	public logToConsoleAndThrowError(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR);
+		Logger.log(this.toString(), LoggerEnum.ERROR, true);
 		throw new Error(this.message);
 	}
     
 	public logToConsoleAndThrowException(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR);
+		Logger.log(this.toString(), LoggerEnum.ERROR, true);
 		throw new Exception(this.message);
 	}
 
 	public logToConsoleAndThrowExceptionWithMessage(message: string): void {
-		Logger.log(this.messageToString(message), LoggerEnum.ERROR);
+		Logger.log(this.messageToString(message), LoggerEnum.ERROR, true);
 		throw new Exception(message);
-	}
-
-	public logToFile(file: string): void {
-		const filePath = path.join(Exception.pathToLog, file);
-		const dir = path.join(Exception.pathToLog);
-
-		if (!fs.existsSync(dir)) {
-			fs.mkdirSync(dir);
-		}
-
-		fs.appendFile(filePath, this.messageToString() + "\n", (err: NodeJS.ErrnoException | null) => {
-			if (err) throw err;
-		});
-	}
-
-
-	public static logToFile(error: Error, consolePrint: boolean, user: {name: string, id: string} = {name: "", id: ""}): void {
-		const exception = new Exception(error.message, user.name === "" ? null : user);
-
-		if (consolePrint) {
-			Logger.log(error.message, LoggerEnum.ERROR);
-		}
-		exception.logToFile(Exception.errorFile);
 	}
 }
