@@ -2,7 +2,7 @@
 import { Client, REST } from "discord.js";
 import { BaseModule } from "@src/structures";
 import eventLoader from "@events/loader"
-import * as fs from 'fs';
+import * as fs from "fs";
 
 /**
  * @description Base class for client

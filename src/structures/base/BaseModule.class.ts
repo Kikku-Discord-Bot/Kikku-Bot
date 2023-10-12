@@ -324,7 +324,7 @@ export abstract class BaseModule {
 				continue;
 			}
 			this.printChangement(statusIsChanged);
-			toRegister.push(interaction.getSlashCommand().toJSON());
+			//toRegister.push(interaction.getSlashCommand().toJSON());
 		}
 		
 		if (toRegister.length === 0) {
