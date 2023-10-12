@@ -10,7 +10,7 @@ import { ChatInputCommandInteraction } from "discord.js";
  */
 export class TicketOpenButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketopen", "Open a ticket");
+		super({name: "ticketopen", description: "Open a ticket"});
 	}
 
 	/**
@@ -28,8 +28,7 @@ export class TicketOpenButtonInteraction extends BaseInteraction {
 				interaction.reply("Ticket not found");
 		} catch	(error: unknown) {
 			if (error instanceof Error)
-				Exception.logToFile(error, true);
-			throw new Error("There was an error while executing this command!");
+				throw new Error("There was an error while executing this command!");
 		}
 	}
 }

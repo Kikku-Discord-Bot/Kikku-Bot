@@ -9,7 +9,11 @@ import { Message } from "discord.js";
  */
 export class TicketCreateCommand extends BaseCommand {
 	constructor() {
-		super("ticketset", ["ts"], "Set a channel as ticket", "Tickets", 0, true, []);
+		super({
+			name: "ticketset", 
+			aliases: ["ts"], 
+			description: "Set a channel as ticket"
+		});
 	}
 
 	/**

@@ -8,7 +8,7 @@ import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuild
  */
 export class PanelSendChannelInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelsendchannel", "Setup category for ticket panel");
+		super({name: "ticketpanelsendchannel", description: "Setup category for ticket panel"});
 	}
 
 	/**

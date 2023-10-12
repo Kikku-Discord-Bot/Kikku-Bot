@@ -24,6 +24,7 @@ export const TicketModel = sequelize.define(
 		},
 		embedMessage: {
 			type: Sequelize.STRING,
+			defaultValue: 0,
 		},
 		fkPanel: {
 			type: Sequelize.UUID,

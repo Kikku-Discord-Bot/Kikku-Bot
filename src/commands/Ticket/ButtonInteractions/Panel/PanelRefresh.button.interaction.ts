@@ -9,7 +9,7 @@ import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket
  */
 export class PanelRefreshInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketrefreshpanel", "Refresh a ticket panel");
+		super({name: "ticketrefreshpanel", description: "Refresh a ticket panel"});
 	}
 
 	/**
