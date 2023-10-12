@@ -23,9 +23,18 @@ export class ReadyEvent extends BaseEvent {
 	async execute(client: BaseClient): Promise<void> {
 		console.log(`Logged in as ${client.user?.tag}`);
 
-		let statusIndex = 0;
+		const statusIndex = 0;
 		const { VERSION, BOT_NAME } = client.getKeys();
-		setInterval(() => {
+		const status = `${BOT_NAME ? BOT_NAME : "?"} v${VERSION ? VERSION : "?"}`; // You can change the status here
+		const activity = { 
+			type: ActivityType.Playing, 
+			name: status,
+		} as ActivitiesOptions;
+		client.user?.setPresence({
+			activities: [activity],
+			status: "online"
+		})
+		/*setInterval(() => {
 			const status = [`${BOT_NAME ? BOT_NAME : "?"} v${VERSION ? VERSION : "?"}`, "Developped by Serena Satella"]; // You can change the status here
 			const activity = { 
 				type: ActivityType.Playing, 
@@ -36,7 +45,7 @@ export class ReadyEvent extends BaseEvent {
 				status: "online"
 			})
 			if (statusIndex < status.length - 1) statusIndex++; else statusIndex = 0;
-		}, 10000);
+		}, 10000);*/
 		await this.loadingGuilds(client);
 	}
 
@@ -53,7 +62,7 @@ export class ReadyEvent extends BaseEvent {
 					console.log(`Guild ${guild.name} created`);
 				}
 				await this.loadingUsers(guild, guildDB);
-				await this.loadingTickets(guild, guildDB);
+				//await this.loadingTickets(guild, guildDB);
 			});
 		})
 	}

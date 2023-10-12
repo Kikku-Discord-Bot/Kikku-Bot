@@ -9,7 +9,7 @@ import { HelpSlashCommand } from "../Help.interaction";
  */
 export class HelpPreviousPageButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("helppreviouspage", "Go to the previous page of the help menu");
+		super({name: "helppreviouspage", description: "Go to the previous page of the help menu"});
 	}
 
 	/**

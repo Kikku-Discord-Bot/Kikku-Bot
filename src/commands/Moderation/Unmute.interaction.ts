@@ -11,20 +11,25 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class UnmuteSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("unmute", "Unmute a member", [
-			{
-				name: "member",
-				description: "The member to unmute",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "reason",
-				description: "The reason for the unmute",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			}
-		], 0, true, [PermissionFlagsBits.MuteMembers]);
+		super({
+			name: "unmute", 
+			description: "Unmute a member", 
+			options: [
+				{
+					name: "member",
+					description: "The member to unmute",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "reason",
+					description: "The reason for the unmute",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				}
+			], 
+			permissions: [PermissionFlagsBits.MuteMembers]
+		})
 	}
 
 	/**

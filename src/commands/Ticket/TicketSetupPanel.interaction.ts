@@ -9,7 +9,10 @@ import { ChatInputCommandInteraction, ActionRowBuilder, ButtonBuilder, ButtonSty
  */
 export class TicketSetupPanelCommand extends BaseSlashCommand {
 	constructor() {
-		super("ticketsetup", "Setup a ticket panel", [], 0, true, []);
+		super({
+			name: "ticketsetup",
+			description: "Setup a ticket panel",
+		});
 	}
 
 	/**

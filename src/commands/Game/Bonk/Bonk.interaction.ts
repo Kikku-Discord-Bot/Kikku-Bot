@@ -12,16 +12,19 @@ import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
  */
 export class BonkSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("bonk", "Bonk someone",
-			[
+		super({
+			name: "bonk",
+			description: "Bonk someone",
+			options: [
 				{
 					name: "user",
-					description: "The user to bonk",
+					description: "User to bonk",
 					type: SlashCommandOptionType.USER,
 					required: true
 				}
 			],
-			0, true, []);
+			isEnabled: false
+		});
 	}
 
 	/**
@@ -71,7 +74,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 		}
 		const json = JSON.parse(response);
 		if (json.error) {
-			Exception.logToFile(json.error, true, {name: interaction.user.username, id: interaction.user.id});
+			Exception.getErrorMessageLogFormat(json.error, true, {name: interaction.user.username, id: interaction.user.id});
 			throw new Error(json.error);
 		}
 		const index = Math.floor(Math.random() * limit);
@@ -81,7 +84,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 			gif = json.results[index].media_formats.gif.url
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				Exception.logToFile(error, true, {name: interaction.user.username, id: interaction.user.id});
+				Exception.getErrorMessageLogFormat(error.message, true, {name: interaction.user.username, id: interaction.user.id});
 				throw new Error("No gif found");
 			}
 		}
@@ -94,7 +97,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 			});
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				Exception.logToFile(error, true, {name: interaction.user.username, id: interaction.user.id});
+				Exception.getErrorMessageLogFormat(error.message, true, {name: interaction.user.username, id: interaction.user.id});
 				throw new Error("Failed to reply to interaction with gif");
 			}
 		}

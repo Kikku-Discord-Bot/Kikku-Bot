@@ -10,7 +10,7 @@ import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket
  */
 export class TicketOpenButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("paneldescriptionmodal", "Change panel name");
+		super({name: "paneldescriptionmodal", description: "Change panel name"});
 	}
 
 	/**

@@ -9,14 +9,18 @@ import { SlashCommandOptionType } from "@src/structures";
  */
 export class HelpSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("help", "Get help with the bot", [
-			{
-				name: "command",
-				description: "The command to get help with",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			} 
-		], 0, true, []);
+		super({
+			name: "help", 
+			description: "Get help with the bot", 
+			options: [
+				{
+					name: "command",
+					description: "The command to get help with",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				}
+			]
+		})
 	}
 
 	/**

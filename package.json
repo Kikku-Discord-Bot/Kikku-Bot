@@ -1,32 +1,33 @@
 {
-  "name": "Faucheuse",
+  "name": "kikku-bot",
   "version": "1.0.0",
   "description": "",
   "main": "src/Bot.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -q ./src/Bot.ts",
+    "build": "tsc",
     "start": "ts-node src/Bot.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.5.1",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
-    "i18next": "^23.4.9",
-    "mariadb": "^3.1.1",
+    "i18next": "^23.5.1",
+    "mariadb": "^3.2.1",
     "sequelize": "^6.31.0",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "@types/node": "^20.6.2",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
-    "@typescript-eslint/parser": "^5.59.1",
+    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.39.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typedoc": "^0.24.8",
     "typescript": "^5.2.2"
   }
 }

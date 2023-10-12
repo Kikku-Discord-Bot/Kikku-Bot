@@ -9,7 +9,7 @@ import { TicketHandler } from "@src/structures/database/handler/ticket.handler.c
  */
 export class PanelChangeDeleteSelectInteraction extends BaseInteraction {
 	constructor() {
-		super("panelchangedeleteselect", "Change the role for the ticket panel");
+		super({name: "panelchangedeleteselect", description: "Change the role for the ticket panel"});
 	}
 
 	/**

@@ -3,6 +3,7 @@
 import { BaseClient } from "@src/structures";
 import { readdirSync } from "fs";
 import { Exception } from "@src/structures/exception/exception.class";
+import { Logger } from "@src/structures/logger/logger.class";
 
 /**
  * @description Loads the events of the client&
@@ -14,7 +15,7 @@ import { Exception } from "@src/structures/exception/exception.class";
  * @memberof module:Events
  * @inner
  */
-export = async (client: BaseClient) => {
+export = async (client: BaseClient): Promise<void> => {
 	const eventFiles = readdirSync("./src/events");
 	for (const file of eventFiles) {
 		const lstat = await (await import("fs")).promises.lstat(`./src/events/${file}`);
@@ -22,7 +23,7 @@ export = async (client: BaseClient) => {
 			const subEventFiles = readdirSync(`./src/events/${file}`).filter((file: string) => file.endsWith("event.ts"));
 			for (const subFile of subEventFiles) {
 				const Event = (await import(`../events/${file}/${subFile}`));
-				Object.entries(Event).forEach(([, value]) => {
+				Object.entries(Event).forEach(async ([, value]) => {
 					try {
 						const event = new (value as any)();
 						if (event.once) {
@@ -30,7 +31,7 @@ export = async (client: BaseClient) => {
 								client.once(event.name, (...args: any) => event.execute(client, ...args));
 							} catch (error: any) {
 								if (event.name !== "ready") 
-									Exception.logToFile(error, true);
+									await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error");
 								else 
 									throw new Error(`Error loading event ${file}/${subFile}`);
 							}
@@ -39,13 +40,13 @@ export = async (client: BaseClient) => {
 								client.on(event.name, (...args: any) => event.execute(client, ...args));
 							} catch (error: any) {
 								if (event.name !== "ready") 
-									Exception.logToFile(error, true);
+									await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error");
 								else 
 									throw new Error(`Error loading event ${file}/${subFile}`);
 							}
 						}
 					} catch (error: any) {
-						Exception.logToFile(error, true);
+						await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error");
 						throw new Error(`Error loading event ${file}/${subFile}`);
 					}
 				});
