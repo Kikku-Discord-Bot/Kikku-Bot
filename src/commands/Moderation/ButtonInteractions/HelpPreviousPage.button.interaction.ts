@@ -9,7 +9,7 @@ import { HelpSlashCommand } from "../Help.interaction";
  */
 export class HelpPreviousPageButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("helppreviouspage", "Go to the previous page of the help menu");
+		super({name: "helppreviouspage", description: "Go to the previous page of the help menu"});
 	}
 
 	/**
@@ -29,7 +29,7 @@ export class HelpPreviousPageButtonInteraction extends BaseInteraction {
 			await interaction.deferUpdate();
 			await interaction.editReply(HelpSlashCommand.optionsHelpCommandEmbed(client, moduleName, newPageIndex) as MessageEditOptions);
 		} else {
-			await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true })
+			throw new Error("There was an error while executing the helppreviouspage button interaction!");
 		}
 	}
 }

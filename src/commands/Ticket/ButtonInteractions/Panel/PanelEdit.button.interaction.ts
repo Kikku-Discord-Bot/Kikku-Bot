@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, Colors, ButtonStyle } from "discord.js";
+import { ButtonInteraction, StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 
 /**
@@ -9,7 +9,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelEditInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpaneledit", "Edit a ticket panel");
+		super({name: "ticketpaneledit", description: "Edit a ticket panel"});
 	}
 
 	/**
@@ -19,10 +19,12 @@ export class PanelEditInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
-		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id);
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		if (!ticketPanels) {
-			await interaction.reply({content: "An error occurred while getting your panel ticket", ephemeral: true});
-			return;
+			throw new Error("Ticket panels is null");
 		}
 
 		const row = new ActionRowBuilder<StringSelectMenuBuilder>()

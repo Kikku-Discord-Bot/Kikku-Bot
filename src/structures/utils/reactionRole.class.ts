@@ -24,7 +24,6 @@ export class ReactionRole {
 		if (reaction.message.partial) {
 			await reaction.message.fetch();
 		}
-		const { id } = reaction.message;
 		try {
 			if (!reaction.emoji.name) return;
 			if (this.roleMatch.has(reaction.emoji.name)) {
@@ -50,7 +49,6 @@ export class ReactionRole {
 		if (reaction.message.partial) {
 			await reaction.message.fetch();
 		}
-		const { id } = reaction.message;
 		try {
 			if (!reaction.emoji.name) return;
 			if (this.roleMatch.has(reaction.emoji.name)) {

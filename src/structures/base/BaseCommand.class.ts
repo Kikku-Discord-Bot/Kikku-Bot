@@ -1,10 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Message } from "discord.js";
 import { BaseClient } from "./BaseClient.class";
 
 
+export interface BaseCommandOptions {
+	name: string;
+	aliases: string[];
+	description?: string;
+	usage?: string;
+	cooldown?: number;
+	isEnabled?: boolean;
+	permissions?: string[];
+	nsfw?: boolean;
+}
+
 /**
  * @description Base class for commands
  * @category BaseClass
+ * @deprecated Use BaseSlashCommand instead, this will be removed when slash commands are fully implemented
  */
 export abstract class BaseCommand {
 	private name: string;
@@ -17,7 +32,7 @@ export abstract class BaseCommand {
 	private permissions: string[];
 	private nsfw = false;
 
-	constructor(name: string, aliases: string[], description?: string, usage?: string, cooldown?: number,isEnabled?: boolean, permissions?: string[], nsfw?: boolean) {
+	constructor({ name, aliases, description, usage, cooldown, isEnabled, permissions, nsfw }: BaseCommandOptions) {
 		this.name = name;
 		this.aliases = aliases;
 		this.enabled = isEnabled || true;

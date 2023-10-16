@@ -2,6 +2,7 @@ import Sequelize from "sequelize";
 import { DBConnection } from "../dbConnection.db.class"
 import { GuildModel } from "./guild.db.model";
 import { UserModel } from "./user.db.model";
+import { TicketModel } from "./ticket.db.model";
 const sequelize = DBConnection.getInstance().sequelize
 
 export const PanelTicketModel = sequelize.define(
@@ -53,3 +54,17 @@ export const PanelTicketModel = sequelize.define(
 		},
 	}
 );
+
+PanelTicketModel.beforeDestroy(async (panelTicket) => {
+	const tickets = await TicketModel.findAll({
+		where: {
+			fkPanel: panelTicket.get("id"),
+		}
+	})
+
+	for (const ticket of tickets) {
+		await ticket.update({
+			fkPanel: null,
+		})
+	}
+})

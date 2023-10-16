@@ -16,9 +16,8 @@ export class MessageDeletedEvent extends BaseEvent {
 	 * @description Executes the event
 	 * @param {BaseClient} client
 	 * @param {Message} message
-	 * @param {string[]} args
 	 */
-	async execute(client: BaseClient, message: Message, ...args: string[]): Promise<void> {
+	async execute(client: BaseClient, message: Message): Promise<void> {
 
 		if (message.author && message.author.bot) return;
 		

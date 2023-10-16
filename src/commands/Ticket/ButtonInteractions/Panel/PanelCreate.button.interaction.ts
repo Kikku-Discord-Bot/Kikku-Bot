@@ -1,6 +1,7 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, Interaction } from "discord.js";
+import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle } from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
+import { Exception } from "@src/structures/exception/exception.class";
 
 /**
  * @description TicketOpen button interaction
@@ -9,7 +10,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelCreateInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelcreate", "Create a ticket panel");
+		super({name: "ticketpanelcreate", description: "Create a ticket panel"});
 	}
 
 	/**
@@ -20,14 +21,16 @@ export class PanelCreateInteraction extends BaseInteraction {
      */
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 		if (!await PanelCreateInteraction.dbUpdate(interaction)) {
-			await interaction.reply({content: "An error occurred while creating your panel ticket", ephemeral: true});
-			return;
+			throw new Exception("An error occurred while creating your panel ticket");
 		}
         
-		const panel = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id);
-		if (!panel) {  
-			await interaction.reply({content: "An error occurred while creating your panel ticket", ephemeral: true});
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
 			return;
+		}
+		const panel = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
+		if (!panel) {  
+			throw new Exception("An error occurred while creating your panel ticket");
 		}
 
 		const embed = new EmbedBuilder()
@@ -38,12 +41,12 @@ export class PanelCreateInteraction extends BaseInteraction {
             
 		const embed2 = new EmbedBuilder()
 			.setTitle("Panel Name")
-			.setDescription(panel.name ? panel.name : "```...```")
+			.setDescription(panel.name ? `\`\`\`${panel.name}\`\`\`` : "```...```")
 
         
 		const embed3 = new EmbedBuilder()
 			.setTitle("Panel Description")
-			.setDescription(panel.description ? panel.description : "```...```")
+			.setDescription(panel.description ? `\`\`\`${panel.description}\`\`\`` : "```...```")
             
 
 		const row = new ActionRowBuilder<ButtonBuilder>()
@@ -78,11 +81,19 @@ export class PanelCreateInteraction extends BaseInteraction {
 		const userId = interaction.user.id;
 		if (!interaction.guild) return false;
 		const guildId = interaction.guild.id;
-		const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(userId, guildId);
-		if (!panelTicket || panelTicket.status !== PanelTicketEnum.DRAFT) {
-			const newPanelTicket = await PanelTicketHandler.createPanelTicket(userId, guildId, "New Panel");
-			if (!newPanelTicket) return false;
+
+		try {
+			const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(userId, guildId);
+			if (!panelTicket || panelTicket.status !== PanelTicketEnum.DRAFT) {
+				const newPanelTicket = await PanelTicketHandler.createPanelTicket(userId, guildId, "New Panel");
+				if (!newPanelTicket) return false;
+			}
+		} catch (error: unknown) {
+			if (error instanceof Error)
+				throw new Exception(error.message);
+			throw new Exception("Couldn't create the panel ticket!");
 		}
+		
 		return true;
 	}
 }

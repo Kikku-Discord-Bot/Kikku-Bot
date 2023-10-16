@@ -10,7 +10,7 @@ import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket
  */
 export class TicketOpenButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("paneldescriptionmodal", "Change panel name");
+		super({name: "paneldescriptionmodal", description: "Change panel name"});
 	}
 
 	/**
@@ -23,18 +23,15 @@ export class TicketOpenButtonInteraction extends BaseInteraction {
 		console.log("paneldescriptionmodal");
 		const message = interaction.message;
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 		const newDescription = interaction.fields.getTextInputValue("paneldescription");
 		if (!newDescription) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("New description is null");
 		}
 		const thirdEmbed = message.embeds[2];
 		if (!thirdEmbed || !thirdEmbed.title) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 		const newThirdEmbed = new EmbedBuilder()
 			.setTitle(thirdEmbed.title)
@@ -45,8 +42,7 @@ export class TicketOpenButtonInteraction extends BaseInteraction {
 				if (panel) {
 					const status = panel.updatePanelTicketDescription(newDescription);
 					if (!status) {
-						interaction.reply({ content: "Something went wrong", ephemeral: true });
-						return;
+						throw new Error("An error occurred while updating your panel ticket");
 					}
 				}
 			});

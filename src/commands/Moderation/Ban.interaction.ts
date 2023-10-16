@@ -11,33 +11,38 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class MuteSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("ban", "Ban a member", [
-			{
-				name: "member",
-				description: "The member to ban",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "reason",
-				description: "The reason for the ban",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			},
-			{
-				name: "delete_messages",
-				description: "Delete messages from the member",
-				required: false,
-				type: SlashCommandOptionType.BOOLEAN
-			},
-			{
-				name: "days_of_messages",
-				description: "The amount of days to delete messages from, (max 7, default 7)",
-				required: false,
-				type: SlashCommandOptionType.INTEGER
-			}
-		], 0, true, [PermissionFlagsBits.BanMembers]);
-	}
+		super({
+			name: "ban", 
+			description: "Ban a member", 
+			options: [
+				{
+					name: "member",
+					description: "The member to ban",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "reason",
+					description: "The reason for the ban",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				},
+				{
+					name: "delete_messages",
+					description: "Delete messages from the member",
+					required: false,
+					type: SlashCommandOptionType.BOOLEAN
+				},
+				{
+					name: "days_of_messages",
+					description: "The amount of days to delete messages from, (max 7, default 7)",
+					required: false,
+					type: SlashCommandOptionType.INTEGER
+				}
+			], 
+			permissions: [PermissionFlagsBits.BanMembers],
+		});
+	}	
 
 	/**
 	 * @description Executes the slash command
@@ -53,27 +58,23 @@ export class MuteSlashCommand extends BaseSlashCommand {
 		const author = interaction.member as GuildMember;
 
 		if (!interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Guild is null");
 		}
 
 		const GuildDB = await GuildHandler.getGuildById(interaction.guild.id);
 
 		if (!memberOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member option is null");
 		}
         
 		const member = memberOption.member;
 
-		if (!member || !interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member) {
+			throw new Error("Member is null");
 		}
 
 		if (!(member instanceof GuildMember)) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member is not a GuildMember");
 		}
 
 		if (!member.bannable) {
@@ -100,8 +101,8 @@ export class MuteSlashCommand extends BaseSlashCommand {
 			}
 			await interaction.reply({embeds: [this.createEmbed(author, member, reason)]});
 			GuildDB?.removeUserFromGuild(member.id);
-		} catch (error: any) {
-			if (error.rawError.message.includes("Missing Permissions")) {
+		} catch (error: unknown) { // Discord API error
+			if ((error as { rawError: { message: string; }; }).rawError.message.includes("Missing Permissions")) {
 				await interaction.reply({content: "I am missing permissions to ban this member!", ephemeral: true});
 				return;
 			}

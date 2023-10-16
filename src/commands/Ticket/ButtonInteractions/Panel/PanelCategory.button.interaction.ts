@@ -9,7 +9,7 @@ import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder, ButtonBuilde
  */
 export class PanelCategoryInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelcategory", "Setup category for ticket panel");
+		super({name: "ticketpanelcategory", description: "Setup category for ticket panel"});
 	}
 
 	/**
@@ -20,9 +20,9 @@ export class PanelCategoryInteraction extends BaseInteraction {
      */
 	async execute(client: BaseClient, interaction: ButtonInteraction): Promise<void> {
 		if (!interaction.guild) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Guild is null");
 		}
+		
 		const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		let description = "None selected...";
        

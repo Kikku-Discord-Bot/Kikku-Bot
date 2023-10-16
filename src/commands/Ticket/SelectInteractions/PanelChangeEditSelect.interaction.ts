@@ -1,5 +1,5 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, StringSelectMenuBuilder,Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction, ChannelSelectMenuInteraction, StringSelectMenuInteraction} from "discord.js";
+import { StringSelectMenuBuilder, ActionRowBuilder , ButtonBuilder, ButtonStyle, StringSelectMenuInteraction} from "discord.js";
 import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 /**
  * @description TicketOpen button interaction
@@ -8,7 +8,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelChangeEditSelectInteraction extends BaseInteraction {
 	constructor() {
-		super("panelchangeeditselect", "Change the role for the ticket panel");
+		super({name: "panelchangeeditselect", description: "Change the role for the ticket panel"});
 	}
 
 	/**
@@ -18,14 +18,10 @@ export class PanelChangeEditSelectInteraction extends BaseInteraction {
      * @returns {Promise<void>}
      */
 	async execute(client: BaseClient, interaction: StringSelectMenuInteraction): Promise<void> {
-		const message = interaction.message;
-
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
 		if (interaction.values && interaction.values.length >= 1) {
-			if (!interaction.guild) {
-				await interaction.reply({ content: "Something went wrong", ephemeral: true });
-				return;
-			}
-
 			const data = interaction.values[0]
 			const panelTicket = await PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 			if (panelTicket) {
@@ -34,16 +30,14 @@ export class PanelChangeEditSelectInteraction extends BaseInteraction {
 			const toChangePanel = await PanelTicketHandler.getPanelTicketById(data) 
 
 			if (!toChangePanel) {
-				await interaction.reply({ content: "Something went wrong", ephemeral: true });
-				return;
+				throw new Error("Panel is null");
 			}
 			await toChangePanel.updatePanelTicketStatus(PanelTicketEnum.EDIT)
 		}
 
-		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild!.id);
+		const ticketPanels = await PanelTicketHandler.getAllPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id);
 		if (!ticketPanels) {
-			await interaction.reply({content: "An error occurred while getting your panel ticket", ephemeral: true});
-			return;
+			throw new Error("Ticket panels are null");
 		}
 
 		const rowPanel = new ActionRowBuilder<StringSelectMenuBuilder>()

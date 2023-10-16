@@ -1,5 +1,5 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
-import { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js";
+import { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import { PermissionFlagsBits } from "discord.js";
 import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
@@ -11,20 +11,25 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class UnmuteSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("unmute", "Unmute a member", [
-			{
-				name: "member",
-				description: "The member to unmute",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "reason",
-				description: "The reason for the unmute",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			}
-		], 0, true, [PermissionFlagsBits.MuteMembers]);
+		super({
+			name: "unmute", 
+			description: "Unmute a member", 
+			options: [
+				{
+					name: "member",
+					description: "The member to unmute",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "reason",
+					description: "The reason for the unmute",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				}
+			], 
+			permissions: [PermissionFlagsBits.MuteMembers]
+		})
 	}
 
 	/**
@@ -35,29 +40,31 @@ export class UnmuteSlashCommand extends BaseSlashCommand {
 	 */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
 		const memberOption = interaction.options.get("member")
-		const guildDB = await GuildHandler.getGuildById(interaction.guild!.id);
+
+		if (!interaction.guild) {
+			throw new Error("Guild is null");
+		}
+
+		const guildDB = await GuildHandler.getGuildById(interaction.guild.id);
 
 		if (!memberOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member option is null");
 		}
         
 		const member = memberOption.member;
 
-		if (!member || !interaction.guild) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member) {
+			throw new Error("Member is null");
 		}
 
 		if (!(member instanceof GuildMember)) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member is not a GuildMember");
 		}
 
 		const role = interaction.guild.roles.cache.find(r => r.name === "Muted");
 
 		if (!role) {
-			await interaction.reply("Something went wrong!");
+			await interaction.reply("This server does not have a muted role!");
 			return;
 		}
 

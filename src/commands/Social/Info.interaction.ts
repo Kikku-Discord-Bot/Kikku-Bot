@@ -13,13 +13,17 @@ import exp from "constants";
  */
 export class InfoSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("info", "info of a member", [
-			{
-				name: "member",
-				description: "The member to unmute",
-				type: SlashCommandOptionType.USER
-			},
-		], 0, true, []);
+		super({
+            name: "info", 
+            description: "info of a member",
+            options: [
+                {
+                    name: "member",
+                    description: "The member to unmute",
+                    type: SlashCommandOptionType.USER
+                },
+		    ]}
+        );
 	}
 
 	/**
@@ -29,27 +33,25 @@ export class InfoSlashCommand extends BaseSlashCommand {
 	 * @returns {Promise<void>}
 	 */
 	async execute(client: BaseClient, interaction: ChatInputCommandInteraction): Promise<void> {
-		const memberOption = interaction.options.get("member")
+		const memberOption = interaction.options.get("member") 
         let exps = { user: 0, guild: 0}
-        if (!memberOption) {
-		    exps = await UserHandler.getExperience(interaction.user.id, interaction.guild!.id);
-        } else {
-            if (!(memberOption instanceof GuildMember)) {
-                await interaction.reply("Something went wrong!");
-                return;
-            }
-            exps = await UserHandler.getExperience(memberOption.user.id, interaction.guild!.id);
+        let user = interaction.user;
+
+        if (memberOption && memberOption.user) {
+            user = memberOption.user;
         }
 
         if (!exps || !interaction.guild) {
             await interaction.reply("Something went wrong!");
             return;
         }
+
+        
         const userLevel = this.getLevel(exps.user);
         const guildLevel = this.getLevel(exps.guild);
         const embed = new EmbedBuilder()
             .setTitle("Info")
-            .setDescription(`Here is the info of ${memberOption?.user.tag || interaction.user.tag}`)
+            .setDescription(`Here is the info of ${user.tag}`)
             .addFields(
                 { name: "User Level", value: userLevel.toString(), inline: true },
                 { name: "User Experience", value: exps.user.toString(), inline: false },
@@ -92,7 +94,7 @@ export class InfoSlashCommand extends BaseSlashCommand {
     }
 
     remainingExpPourcentage(level: number, exp: number): number {
-        return Math.floor((exp /   * 100);
+        return Math.floor((exp / level) * 100);
     }
 
     createImage(user: { level: number, exp: number }, guild: { level: number, exp: number }): Promise<Buffer> {

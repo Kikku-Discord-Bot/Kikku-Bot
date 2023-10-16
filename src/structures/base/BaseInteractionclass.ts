@@ -1,20 +1,33 @@
-import { Interaction, PermissionFlagsBits } from "discord.js";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Interaction, LocalizationMap } from "discord.js";
 import { BaseClient } from "@src/structures";
+
+export interface BaseInteractionOptions {
+	name: string;
+	description: string;
+	nameLocalisation?: LocalizationMap,
+	descriptionLocalisation?: LocalizationMap
+	options?: any;
+	cooldown?: number;
+	isEnabled?: boolean;
+	permissions?: bigint[];
+}
 
 /**
  * @description Base class for slash commands
  * @category BaseClass
  */
 export abstract class BaseInteraction  {
-	private name: string;
-	private description: string;
-	private options: any;
+	protected name: string;
+	protected description: string;
+	protected options: any;
 	private enabled: boolean;
 	private cooldown: number;
 	private permissions: bigint[];
 	private module = "";
 
-	constructor(name: string, description: string, options?: any, cooldown?: number, isEnabled?: boolean, permissions?: bigint[]) {
+	constructor({ name, description, options, isEnabled, cooldown, permissions }: BaseInteractionOptions) {
 		this.name = name;
 		this.description = description;
 		this.options = options || [];

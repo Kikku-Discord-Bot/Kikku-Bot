@@ -78,7 +78,6 @@ function messageHtmlCreator(message: Message) {
 }
 
 export default async function buildTranscript(guildId: string, client: BaseClient, channel: TextChannel) {
-	const guild = client.guilds.cache.get(guildId);
 	const messages = (await channel.messages.fetch({ cache: true })).reverse();
 
 	let transcript = "<body>";

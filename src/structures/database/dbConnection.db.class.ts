@@ -6,14 +6,21 @@ export class DBConnection {
 	private _sequelize: Sequelize;
 
 	private constructor() {
+		if (process.env.DB_NAME === undefined || 
+			process.env.DB_USER === undefined || 
+			process.env.DB_PASS === undefined || 
+			process.env.DB_HOST === undefined || 
+			process.env.DB_PORT === undefined) {
+			throw new Error("Missing database environment variables");
+		}
 		this._sequelize = new Sequelize(
-			process.env.DB_NAME!,
-			process.env.DB_USER!,
+			process.env.DB_NAME,
+			process.env.DB_USER,
 			process.env.DB_PASS,
 			{
 				dialect: "mariadb",
 				host: process.env.DB_HOST,
-				port: parseInt(process.env.DB_PORT!),
+				port: parseInt(process.env.DB_PORT),
 				retry: {
 					max: 5,
 					match: [
@@ -30,9 +37,13 @@ export class DBConnection {
 
 	public static getInstance(): DBConnection {
 		if (!DBConnection.instance) {
-			DBConnection.instance = new DBConnection();
+			try {
+				DBConnection.instance = new DBConnection();
+			} catch (err) {
+				console.error(err);
+				process.exit(0);
+			}
 		}
-
 		return DBConnection.instance;
 	}
 

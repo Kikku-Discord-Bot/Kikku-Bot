@@ -9,7 +9,7 @@ import { HelpSlashCommand } from "../Help.interaction";
  */
 export class HelpNextModuleButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("helpnextmodule", "Go to the next module of the help menu");
+		super({name: "helpnextmodule", description: "Go to the next module of the help menu"});
 	}
 
 	/**
@@ -30,7 +30,7 @@ export class HelpNextModuleButtonInteraction extends BaseInteraction {
 			await interaction.deferUpdate();
 			await interaction.editReply(HelpSlashCommand.optionsHelpCommandEmbed(client, newModuleName, newPageIndex) as MessageEditOptions);
 		} else {
-			await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true })
+			throw new Error("There was an error while executing the helpnextmodule button interaction!");
 		}
 	}
 

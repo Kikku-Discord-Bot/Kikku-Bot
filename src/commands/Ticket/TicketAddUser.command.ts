@@ -9,7 +9,11 @@ import { Message } from "discord.js";
  */
 export class TicketAddUserCommand extends BaseCommand {
 	constructor() {
-		super("ticketadduser", ["tau"], "Add user to ticket", "Tickets", 0, true, []);
+		super({
+			name: "ticketadduser", 
+			aliases: ["tau"], 
+			description: "Add user to ticket"
+		});
 	}
 
 	/**
