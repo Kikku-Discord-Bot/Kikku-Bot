@@ -18,7 +18,7 @@
     "dotenv": "^16.0.3",
     "i18next": "^23.5.1",
     "mariadb": "^3.2.1",
-    "sequelize": "^6.31.0",
+    "sequelize": "^6.34.0",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
