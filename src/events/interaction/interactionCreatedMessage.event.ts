@@ -1,6 +1,6 @@
 import { BaseInteraction, BaseEvent, BaseClient } from "@src/structures";
 import { Exception } from "@src/structures/exception/exception.class";
-import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
+import { Logger, LoggerTypeEnum, LoggerFileEnum } from "@src/structures/logger/logger.class";
 import { Events, Interaction } from "discord.js"
 import { t } from "i18next";
 
@@ -34,18 +34,18 @@ export class InteractionCreatedEvent extends BaseEvent {
 	 * @override
 	 */
 	async execute(client: BaseClient, interaction: Interaction): Promise<void> {
-		if (!interaction.isCommand()) return;
+		if (!interaction.isChatInputCommand()) return;
 		for (const module of client.getModules().values()) {
 			if (module.getInteractions().size == 0) continue;
 			if (!module.getInteractions().has(interaction.commandName)) continue;
 			const command: BaseInteraction | undefined = module.getInteractions().get(interaction.commandName);
 			if (!command) continue;
 			try {
-				await Logger.log(`Command ${command.getName()} (${getStringOptionInteraction(interaction)}) was executed by ${interaction.user.tag} (${interaction.user.id})`, LoggerEnum.INFO, true, client);
+				await Logger.log(`Command ${command.getName()} (${getStringOptionInteraction(interaction)}) was executed by ${interaction.user.tag} (${interaction.user.id})`, LoggerTypeEnum.INFO, true, LoggerFileEnum.INFO, client);
 				await command.execute(client, interaction);
 			} catch (error: unknown) {
 				if (error instanceof Error)
-					await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error", true, client);
+					await Logger.log(Exception.getErrorMessageLogFormat(error.message, error.stack), "error", true, LoggerFileEnum.INFO, client);
 				if (!interaction) return;
 				if (interaction.replied) {
 					console.log( t("error.command", { command: command.getName(), user: `<@${client.getAuthorId()}>`}));

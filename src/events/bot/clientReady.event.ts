@@ -1,8 +1,6 @@
 import { BaseEvent, BaseClient  } from "@src/structures";
 import { ActivitiesOptions, ActivityType, Events, Guild, TextChannel } from "discord.js";
-import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
-import { UserHandler } from "@src/structures/database/handler/user.handler.class";
-import { TicketHandler } from "@src/structures/database/handler/ticket.handler.class";
+import { GuildHandler, UserHandler, TicketHandler } from "kikku-database-middleware"
 import { TicketManager } from "@src/structures/tickets/ticketManager.class";
 
 /**TicketDB

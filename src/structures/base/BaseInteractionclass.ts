@@ -88,7 +88,14 @@ export abstract class BaseInteraction  {
 	public getPermissionValue(): bigint {
 		return this.permissions.reduce((a, b) => a | b, BigInt(0)) || BigInt(1);
 	}
-	
+
+	/**
+	 * @description Automatically complete the command
+	 * @param {Interaction} interaction
+	 */
+	public async autoComplete(interaction: Interaction, client: BaseClient): Promise<void> {
+		throw new Error(`Command ${this.name} doesn't have an autoComplete method!`);
+	}
 
 	/**
 	 * @description Executes the command

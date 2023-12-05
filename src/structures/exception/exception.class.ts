@@ -1,4 +1,4 @@
-import { LoggerEnum, Logger } from "../logger/logger.class";
+import { LoggerTypeEnum, Logger } from "../logger/logger.class";
 import fs from "fs";
 import path from "path";
 /*
@@ -18,7 +18,7 @@ export class Exception extends Error {
 		this.name = this.constructor.name;
 		this.user = user;
 
-		Logger.log(this.messageToString(this.message), LoggerEnum.ERROR, true);
+		Logger.log(this.messageToString(this.message), LoggerTypeEnum.ERROR, true);
 		console.log(this.stack);
 	}
 
@@ -49,27 +49,27 @@ export class Exception extends Error {
 	}
 
 	public logToConsoleAndExit(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR, true);
+		Logger.log(this.toString(), LoggerTypeEnum.ERROR, true);
 		process.exit(1);
 	}
 
 	public logToConsoleAndThrow(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR, true);
+		Logger.log(this.toString(), LoggerTypeEnum.ERROR, true);
 		throw this;
 	}
 
 	public logToConsoleAndThrowError(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR, true);
+		Logger.log(this.toString(), LoggerTypeEnum.ERROR, true);
 		throw new Error(this.message);
 	}
     
 	public logToConsoleAndThrowException(): void {
-		Logger.log(this.toString(), LoggerEnum.ERROR, true);
+		Logger.log(this.toString(), LoggerTypeEnum.ERROR, true);
 		throw new Exception(this.message);
 	}
 
 	public logToConsoleAndThrowExceptionWithMessage(message: string): void {
-		Logger.log(this.messageToString(message), LoggerEnum.ERROR, true);
+		Logger.log(this.messageToString(message), LoggerTypeEnum.ERROR, true);
 		throw new Exception(message);
 	}
 }

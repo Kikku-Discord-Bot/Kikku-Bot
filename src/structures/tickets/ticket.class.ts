@@ -3,7 +3,7 @@ import { ButtonStyle, ChatInputCommandInteraction,
 	TextChannel, Message, MessageCreateOptions, User, OverwriteResolvable} from "discord.js";
 import { EmbedBuilder } from "discord.js";
 import { BaseClient } from "@src/structures";
-import { TicketHandler  } from "../database/handler/ticket.handler.class";
+import { TicketHandler  } from "kikku-database-middleware";
 import buildTranscript from "./transcript/transcript"
 
 export class Ticket {

@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { SlashCommandOptionType } from "@src/structures";
 import https = require("https");
 import { Exception } from "@src/structures/exception/exception.class";
-import { Logger, LoggerEnum } from "@src/structures/logger/logger.class";
+import { Logger, LoggerTypeEnum } from "@src/structures/logger/logger.class";
 
 /**
  * @description Bonk slash command
@@ -39,13 +39,13 @@ export class BonkSlashCommand extends BaseSlashCommand {
         
 		if (!userOption) {
 			await interaction.reply({content: "Please provide a user to bonk.", ephemeral: true});
-			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No user provided`, LoggerEnum.INFO);
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No user provided`, LoggerTypeEnum.INFO);
 			return;
 		}
 
 		if (!TENOR_API_KEY) {
 			await interaction.reply({content: "Tenor API is not configured. Please contact the bot owner.", ephemeral: true});
-			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) Tenor API is not configured`, LoggerEnum.INFO);
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) Tenor API is not configured`, LoggerTypeEnum.INFO);
 			return;
 		}
 
@@ -69,7 +69,7 @@ export class BonkSlashCommand extends BaseSlashCommand {
 
 		if (!response) {
 			await interaction.reply({content: "Something went wrong. Please try again later.", ephemeral: true});
-			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No response from Tenor API`, LoggerEnum.INFO);
+			Logger.logToFile(`${interaction.user.username}(${interaction.user.id}) No response from Tenor API`, LoggerTypeEnum.INFO);
 			return;
 		}
 		const json = JSON.parse(response);

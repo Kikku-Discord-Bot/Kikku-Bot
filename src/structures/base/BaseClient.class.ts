@@ -208,19 +208,6 @@ export class BaseClient extends Client {
 	}
 	
 	/**
-	 * @description Sync the database of the client
-	 * @returns {Promise<void>}
-	 * @example
-	 * // sync the database of the client
-	 * client.syncModels();
-	 */
-	async syncModels(): Promise<void> {
-		for (const module of this.modules.values()) {
-			await module.loadDatabaseSchemas();
-		}
-	}
-
-	/**
 	 * @description Load the events of the client
 	 * @returns {Promise<void>}
 	 * @example

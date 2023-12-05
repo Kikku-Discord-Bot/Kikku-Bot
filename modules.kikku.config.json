@@ -1,7 +1,7 @@
 [
     {
         "name": "Waifu",
-        "isActive": true
+        "isActive": false
     },
     {
         "name": "Game",
@@ -14,5 +14,9 @@
     {
         "name": "Ticket",
         "isActive": false
+    },
+    {
+        "name": "Admin",
+        "isActive": true
     }
 ]
