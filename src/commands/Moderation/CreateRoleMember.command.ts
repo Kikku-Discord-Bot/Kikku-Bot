@@ -1,7 +1,7 @@
 import { Colors, Message } from "discord.js";
 import { BaseCommand, BaseClient } from "@src/structures";
 import { PermissionsBitField } from "discord.js";
-import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
+import { GuildHandler } from "kikku-database-middleware";
 
 
 /**

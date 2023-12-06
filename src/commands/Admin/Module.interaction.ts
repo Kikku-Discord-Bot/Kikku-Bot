@@ -1,9 +1,7 @@
 import { BaseSlashCommand, BaseClient } from "@src/structures";
-import { ChatInputCommandInteraction, Colors, GuildMember, EmbedBuilder, AutocompleteInteraction } from "discord.js";
-import { SlashCommandOptionType } from "@src/structures";
+import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import { EnableSlashCommand } from "./subCommands/Enable.subcommand";
-import { PermissionFlagsBits } from "discord.js";
-import { GuildHandler } from "kikku-database-middleware";
+import { DisableSlashCommand } from "./subCommands/Disable.subcommand";
 
 /**
  * @description Module slash command
@@ -16,7 +14,8 @@ export class ModuleSlashCommand extends BaseSlashCommand {
             name: "module",
             description: "Module configuration",
             subCommands: [
-                new EnableSlashCommand()
+                new EnableSlashCommand(),
+                new DisableSlashCommand()
             ],
         })
     }

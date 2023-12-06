@@ -5,7 +5,7 @@
     },
     {
         "name": "Game",
-        "isActive": false
+        "isActive": true
     },
     {
         "name": "Moderation",

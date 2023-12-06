@@ -23,6 +23,7 @@ export class Exception extends Error {
 	}
 
 	public static getErrorMessageLogFormat(message: string, stack: any, user: { id: string, name: string } | null = null): string {
+		console
 		const stackSplit = stack.split("\n");
 		let firstStack = "";
 		if (stackSplit)

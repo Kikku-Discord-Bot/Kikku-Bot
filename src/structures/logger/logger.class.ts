@@ -75,6 +75,32 @@ export class Logger {
 			this.logToFile(message, file);
 	}
 
+	static async debug(message: string, toFile = true, file?: string, client: BaseClient | undefined = undefined): Promise<void> {
+		const type = LoggerTypeEnum.DEBUG;
+		const date  = new Date();
+		const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+		const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+		const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
+		const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+		const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+		const year = date.getFullYear();
+
+		const dateString = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+		if (type) message = `[${dateString}] [${type.toUpperCase()}] ${message}`;
+		if (client) {
+			if (type != LoggerTypeEnum.DEBUG) {
+				const channel = client.channels.cache.get(await Logger.logChannelId)
+				if (channel && channel instanceof TextChannel) {
+					await channel.send(message);
+				}
+			}
+		}
+		console.log(`${message}`);
+
+		if (toFile)
+			this.logToFile(message, file);
+	}
+
 	/**
      * @description Logs a message to a file
      * @param {string} messageqz

@@ -6,6 +6,7 @@ import fs from "fs";
 import { Exception } from "../exception/exception.class";
 import { type } from "os";
 import Module from "module";
+import { GuildHandler } from "kikku-database-middleware";
 
 interface DatabaseFieldSchema {
 	name: string;
@@ -108,6 +109,20 @@ export abstract class BaseModule {
 	 */
 	public isEnabled(): boolean {
 		return this.enabled;
+	}
+
+	/**
+	 * @description Returns the active status of the module for the guild
+	 * @param {string} guildId
+	 * @returns {boolean}
+	 * @example
+	 * // returns Promise<true>
+	 * module.isGuildEnabled();
+	 */
+	public async isGuildEnabled(guildId: string): Promise<boolean> {
+		const guildHandler = await GuildHandler.getGuildById(guildId);
+		if (!guildHandler) return false;
+		return guildHandler.getModuleState(this.name);
 	}
 
 	/**
@@ -246,7 +261,7 @@ export abstract class BaseModule {
 				continue;
 			}
 			this.printChangement(statusIsChanged);
-			//toRegister.push(interaction.getSlashCommand().toJSON());
+			toRegister.push(interaction.getSlashCommand().toJSON());
 		}
 		
 		if (toRegister.length === 0) {

@@ -29,6 +29,5 @@ services:
         volumes:
             - ./src:/app/src
             - ./logs:/app/logs
-            - .:/app/.
         depends_on:
             - db

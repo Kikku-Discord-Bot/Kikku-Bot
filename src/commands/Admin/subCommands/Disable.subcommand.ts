@@ -2,17 +2,17 @@ import { BaseSlashCommand, BaseClient, BaseSubGroupSlashCommand, BaseSubSlashCom
 import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Embed, EmbedBuilder, GuildEmoji } from "discord.js";
 import { GuildHandler } from "kikku-database-middleware";
 /**
- * @description Enable slash command
- * @class EnableSlashCommand
+ * @description Disable slash command
+ * @class DisableSlashCommand
  * @extends BaseSlashCommand
  */
-export class EnableSlashCommand extends BaseSubSlashCommand {
+export class DisableSlashCommand extends BaseSubSlashCommand {
 	constructor() {
 		super({
-			name: "enable",
-			description: "Enable a module",
+			name: "disable",
+			description: "Disable a module",
 			descriptionLocalisation: {
-                fr: "Active un module"
+                fr: "Desactive un module"
             },
             options: [
                 {
@@ -43,18 +43,18 @@ export class EnableSlashCommand extends BaseSubSlashCommand {
         if (!guildHandler) {
             throw new Error("GuildHandler not found");
         }
-        const status = guildHandler.switchModule(moduleChoice, true);
+        const status = guildHandler.switchModule(moduleChoice, false);
         if (!status) {
             throw new Error("Module not found");
         }
         const embed = new EmbedBuilder()
-            .setTitle("Module enabled")
-            .setDescription(`The module ${moduleChoice} has been enabled`)
+            .setTitle("Module disabled")
+            .setDescription(`The module ${moduleChoice} has been disabled`)
             .setColor(0x00FF00);
         await interaction.reply({
             embeds: [embed]
         });
-    }
+	}
 
     /**
      * @description Auto complete the response
@@ -64,7 +64,7 @@ export class EnableSlashCommand extends BaseSubSlashCommand {
      */
     async autoComplete(interaction: AutocompleteInteraction, client: BaseClient): Promise<void> {
         const focused = interaction.options.getFocused();
-        const modulesList = client.getModules();
+        const modulesList = client.getModules()
         let choices = [];
         for(const module of modulesList) {
             const key = module[0];

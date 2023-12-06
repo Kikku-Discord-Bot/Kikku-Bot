@@ -144,6 +144,12 @@ export class BaseClient extends Client {
 			const lstat = await fs.promises.lstat(`${path}/${file}`);
 			if (!file.endsWith(".module.ts") || !lstat.isFile()) continue;
 			const module = await import(`${path}/${file}`);
+			try {
+				new module[Object.keys(module)[0]]();
+			} catch {
+				console.log(`The module ${file} is not an instance of BaseModule, skipping...`);
+				continue;
+			}
 			const moduleInstance = new module[Object.keys(module)[0]]();
 			if (!(moduleInstance instanceof BaseModule)) 
 				throw new Error(`The module ${moduleInstance} is not an instance of BaseModule`);
