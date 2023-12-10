@@ -1,0 +1,100 @@
+{
+    "error": {
+        "title": {
+            "unspecified": "Erreur",
+            "noArgs": "Erreur d'arguments",
+            "noUser": "Erreur d'utilisateur",
+            "noItem": "Erreur d'objet",
+            "money": {
+                "user": {
+                    "unspecified": "Erreur d'argent",
+                    "noMoney": "Pas assez d'argent"
+                }
+            },
+            "item": {
+                "user": {
+                    "alreadyHasFdd": "Impossible de manger un fruit du démon",
+                    "unspecified": "Erreur d'objet",
+                    "noUseable": "Erreur d'objet",
+                    "noStocks": "Erreur d'objet"
+                },
+                "noSelf": "Erreur d'utilisateur",
+                "unique": "Nombre d'objet",
+                "amount": "Nombre d'objet",
+                "noName": "Erreur d'objet",
+                "noId": "Erreur d'objet",
+                "notSellable": "Erreur d'objet",
+                "noUseable": "Impossible d'utiliser l'objet",
+                "noStocks": "Pas assez d'objets",
+                "alreadyExists": "Déja existant",
+                "alreadyOwns": "Déja possédé"
+            },
+            "noReason": "Erreur de raison",
+            "noChannel": "Erreur de salon",
+            "noRole": "Erreur de rôle",
+            "noMessage": "Erreur de message",
+            "noNumber": "Erreur de nombre",
+            "noEmoji": "Erreur d'émoji",
+            "noCommand": "Erreur de commande",
+            "noGuild": "Erreur de serveur",
+            "noCategory": "Erreur de catégorie",
+            "command": "Erreur de commande"
+        },
+        "description": {
+            "unspecified": "Une erreur est survenue ! Contactez {{user}}",
+            "noArgs": "Tu n'as pas donné d'arguments ! {{args}}",
+            "noItem": "Je n'ai pas trouvé l'objet !",
+            "sailing": {
+                "noRepairKit": "Tu n'as pas de kit de réparation !",
+                "notBoat": "L'objet {{item}} n'est pas un bateau !",
+                "alreadySail": "Le bateau {{item}} est déjà en mer !",
+                "notWithBoat": "Le bateau {{item}} n'est pas avec vous, il est à {{port}} !",
+                "notSail": "Le bateau {{item}} n'est pas en mer ! (utilise /init-boat pour le mettre en mer)",
+                "notPort": "Vous n'êtes pas à un port !",
+                "boatNotAtPort": "Le bateau {{item}} n'est pas à {{port}} ! Si vous êtes bloqué à cause d'un bug, contactez {{user}} !",
+                "noSailFrom": "Vous ne pouvez pas naviguer avec le bateau {{item}} depuis {{port}} ! Si vous êtes bloqué à cause d'un bug, contactez {{user}} !",
+                "noSailTo": "Vous ne pouvez pas naviguer avec le bateau {{item}} vers {{port}} ! Si vous êtes bloqué à cause d'un bug, contactez {{user}} !",
+                "waiting": "Vous devez attendre {{minutes}} minutes et {{seconds}} secondes avant de pouvoir naviguer à nouveau !"
+            },
+            "money" : {
+                "user": {
+                    "unspecified": "Une erreur est survenue avec l'argent ! Contacté·e·s {{user}}",
+                    "noMoney": "Tu n'as pas assez d'argent, tu en as {{balance}} ! Il te manque {{missing}} !"
+                }
+            },
+            "item": {
+                "noSelf": "Impossible d'échanger un objet à soi-même !",
+                "user": {
+                    "alreadyHasFdd": "Vous avez déjà mangé un fruit du démon !\n Le {{item}} !",
+                    "unspecified": "Une erreur est survenue avec l'objet {{item}} ! Contacté·e·s {{user}}",
+                    "noUseable": "Tu ne peux pas utiliser l'objet {{item}} !",
+                    "noStocks": "Tu n'as pas assez d'objets {{item}}, tu en as {{stocks}} !",
+                    "alreadyOwns": "Tu possèdes déjà l'objet {{item}} !"
+                },
+                "unique": "L'objet {{item}} est unique, tu ne peux pas en vendre plus d'un !",
+                "amount": "Il faut donner un nombre d'objets supérieur à 0 !",
+                "unspecified": "Une erreur est survenue avec l'objet {{item}} ! Contacté·e·s {{user}}",
+                "alreadyExists": "L'objet {{item}} existe déjà !",
+                "alreadyOwns": "L'objet {{item}} est déja possédé par {{user}} !",
+                "noName": "Je n'ai pas trouvé l'objet {{item}} !",
+                "noId": "Je n'ai pas trouvé l'objet avec l'ID {{id}} !",
+                "notSellable": "L'objet {{item}} n'est pas vendable !",
+                "noUseable": "L'objet {{item}} n'est pas utilisable !",
+                "noStocks": "Il n'y a pas assez d'objets {{item}} dans le stock, il en reste {{stocks}} !"
+            },
+            "noUser": "Je n'ai pas trouvé l'utilisateur !",
+            "noReason": "Tu n'as pas donné de raison !",
+            "noChannel": "Je n'ai pas trouvé le salon !",
+            "noRole": "Je n'ai pas trouvé le rôle !",
+            "noMessage": "Je n'ai pas trouvé le message !",
+            "noNumber": "Tu n'as pas donné de nombre !",
+            "noEmoji": "Je n'ai pas trouvé l'émoji !",
+            "noCommand": "Je n'ai pas trouvé la commande !",
+            "noGuild": "Je n'ai pas trouvé le serveur !",
+            "noCategory": "Je n'ai pas trouvé la catégorie !",
+            "command": "Une erreur est survenue dans la commande {{command}} ! Contacté·e·s {{user}}"
+        },
+        "command": "Une erreur est survenue dans la commande {{command}} ! Contacté·e·s {{user}}",
+        "unspecified": "Une erreur est survenue ! Contacté·e·s {{user}}"
+    }
+}

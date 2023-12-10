@@ -1,0 +1,73 @@
+{
+    "help": "Aide",
+    "author": "Auteur",
+    "version": "Version",
+    "support": "Support",
+    "prefix": "Préfixe",
+    "language": "Langue",
+    "commands": "Commandes",
+    "modules": "Modules",
+    "interaction": "Intéractions",
+    "categories": "Catégories",
+    "category": "Catégorie",
+    "aliases": "Alias",
+    "inventory": "Inventaire",
+    "inventoryDescription": "Voici ton inventaire",
+    "inventoryEmpty": "Ton inventaire est vide !",
+    "inventoryItemDescription": "Prix: {{price}}\nStocks: {{stocks}}",
+    "description": "Description",
+    "noDescription": "Aucune description",
+    "balance": "Solde",
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "report": "Report",
+
+    "unlimited": "Illimité",
+    "noType": "Aucun type",
+    "type": "Type",
+    "amount": "Quantité",
+    "price": "Prix",
+    "stocks": "Stocks",
+    "useable": "Utilisable",
+    "sellable": "Vendable",
+    "unique": "Unique",
+
+    "yes": "Oui",
+    "no": "Non",
+
+    "free": "Gratuit",
+
+    "page": {
+        "previous": "Page Précédente",
+        "next": "Page Suivante"
+    },
+
+    "prefixString": "Mon préfixe est {{prefix}}, ne l'oublie pas !",
+    "prefixSet": "Le préfixe a été changé pour {{prefix}}",
+    "prefixReset": "Le préfixe a été réinitialisé",
+
+    "noPermission": "Tu n'as pas la permission de faire ça !",
+    "botInfo": "Informations sur le bot",
+    "botInfoDescription": "Voici les informations sur moi",
+    
+    "userInfo": "Informations sur l'utilisateur",
+    "userInfoDescription": "Voici les informations sur l'utilisateur",
+
+    "footerAbout": "Bot créé par {{user}}",
+    "footerCommand": "Commande exécutée par {{user}}",
+
+    "helloAdmin": "Bonjour {{user}}-sama !",
+
+
+    "itemAdd": "Objet ajouté",
+    "itemAddDescription": "L'objet {{item}} a été ajouté {{amount}} fois à {{user}} !",
+
+    "itemRemove": "Objet retiré",
+    "itemRemoveDescription": "L'objet {{item}} a été retiré {{amount}} fois à {{user}} !",
+
+    "notEnoughMoney": "Tu n'as pas assez d'argent pour acheter cet objet !"
+}

@@ -10,7 +10,7 @@ import { ButtonInteraction } from "discord.js";
  */
 export class TicketCloseButtonInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketcreatepanel", "Close a ticket");
+		super({name: "ticketcreatepanel", description: "Close a ticket"});
 	}
 
 	/**

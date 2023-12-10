@@ -11,33 +11,38 @@ import { GuildHandler } from "@src/structures/database/handler/guild.handler.cla
  */
 export class MuteSlashCommand extends BaseSlashCommand {
 	constructor() {
-		super("ban", "Ban a member", [
-			{
-				name: "member",
-				description: "The member to ban",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "reason",
-				description: "The reason for the ban",
-				required: false,
-				type: SlashCommandOptionType.STRING
-			},
-			{
-				name: "delete_messages",
-				description: "Delete messages from the member",
-				required: false,
-				type: SlashCommandOptionType.BOOLEAN
-			},
-			{
-				name: "days_of_messages",
-				description: "The amount of days to delete messages from, (max 7, default 7)",
-				required: false,
-				type: SlashCommandOptionType.INTEGER
-			}
-		], 0, true, [PermissionFlagsBits.BanMembers]);
-	}
+		super({
+			name: "ban", 
+			description: "Ban a member", 
+			options: [
+				{
+					name: "member",
+					description: "The member to ban",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "reason",
+					description: "The reason for the ban",
+					required: false,
+					type: SlashCommandOptionType.STRING
+				},
+				{
+					name: "delete_messages",
+					description: "Delete messages from the member",
+					required: false,
+					type: SlashCommandOptionType.BOOLEAN
+				},
+				{
+					name: "days_of_messages",
+					description: "The amount of days to delete messages from, (max 7, default 7)",
+					required: false,
+					type: SlashCommandOptionType.INTEGER
+				}
+			], 
+			permissions: [PermissionFlagsBits.BanMembers],
+		});
+	}	
 
 	/**
 	 * @description Executes the slash command

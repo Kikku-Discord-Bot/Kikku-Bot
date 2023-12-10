@@ -1,0 +1,109 @@
+{
+    "success": {
+        "title": {
+            "unspecified": "Succès !",
+            "money": {
+                "trade": {
+                    "post": "Échange postée ! {{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "accept": "Échange acceptée !",
+                    "refuse": "Échange refusée !",
+                    "cancel": "Échange annulée !"
+                },
+                "hdv": {
+                    "post": "Offre postée ! {{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "accept": "Offre acceptée !",
+                    "cancel": "Offre annulée !"
+                },
+                "user" : {
+                    "show": "Solde de {{user}}"
+                },
+                "add": "Argent ajouté !",
+                "remove": "Argent retiré !",
+                "set": "Solde défini !"
+            },
+            "item": {
+                "used": {
+                    "fdd": "Vous avez mangé le {{item}} !",
+                    "classic": "Item utilisé ! {{item}}"
+                },
+                "add": "Item ajouté ! {{item}}",
+                "remove": "Item retiré ! {{item}}"
+            },
+            "shop": {
+                "list": "Boutique",
+                "edit": "Item édité !",
+                "delete": "Item supprimé !",
+                "create": "Item crée !",
+                "buy": "Achat effectué !",
+                "sell": "Vente effectuée !"
+            },
+            "sailing": {
+                "edit": "Bateau édité !",
+                "where": "Bateau trouvé !",
+                "init": "Ammarage réussi !"
+            }
+        },
+        "description": {
+            "unspecified": "La commande s'est exécutée avec succès !",
+            "money": {
+                "trade" : {
+                    "post": "{{user}} peut accepter ou refuser votre offre en cliquant sur les boutons ci-dessous\n{{seller}} peut annuler l'offre en cliquant sur le bouton ci-dessous également",
+                    "accept": "{{user}} a accepté l'offre de {{seller}}\n{{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "refuse": "{{user}} a refusé l'offre de {{seller}}\n{{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "cancel": "{{seller}} a annulé l'offre de {{user}}\n{{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "report": "Vous avez signalé l'offre de {{seller}} !"
+                },
+                "hdv": {
+                    "post": "Vous pouvez accepter ou refuser l'offre en cliquant sur les boutons ci-dessous\n{{seller}} peut annuler l'offre en cliquant sur le bouton ci-dessous également",
+                    "accept": "{{user}} a accepté l'offre de {{seller}}\n{{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "cancel":"{{seller}} a annulé l'offre\n{{amount}}x {{item}} pour {{money}} Berry(s) !",
+                    "report": "Vous avez signalé l'offre de {{seller}} !"
+                },
+                "user": {
+                    "show": "Vous avez {{balance}} Berry(s) !"
+                },
+                "add": "Vous avez ajouté {{amount}} Berry(s) à {{user}}\nIl a maintenant {{balance}} Berry(s), avant il avait {{oldBalance}} Berry(s)",
+                "remove": "Vous avez retiré {{amount}} Berry(s) à {{user}}\nIl a maintenant {{balance}} Berry(s), avant il avait {{oldBalance}} Berry(s)",
+                "set": "Vous avez défini l'argent de {{user}} à {{balance}} Berry(s), avant il avait {{oldBalance}} Berry(s)"
+            },
+            "shop": {
+                "list": "Achetez des items avec la commande `/item-buy`",
+                "listNoItems": "Il n'y a pas d'items dans la boutique",
+                "edit": "Vous avez édité l'item {{item}}",
+                "editNewName": "Vous avez édité l'item {{item}}, maintenant il s'appelle {{newName}}",
+                "delete": "Vous avez supprimé l'item {{item}}",
+                "create": "Vous avez créé l'item {{item}}",
+                "buy": "Vous avez acheté {{amount}} {{item}} pour {{price}} Berry(s)",
+                "sell": "Vous avez vendu {{amount}} {{item}} pour {{price}} Berry(s)"
+            },
+            "item": {
+                "user" : {
+                    "add": "L'item {{item}} a été ajouté {{amount}} à votre inventaire",
+                    "used": "L'item {{item}} a été utilisé {{amount}} fois",
+                    "remove": "L'item {{item}} a été retiré {{amount}} fois de votre inventaire"
+                },
+                "add": "L'item {{item}} a été ajouté {{amount}} fois à l'inventaire de {{user}}",
+                "used": {
+                    "fdd": "Vous ressentez une énergie étrange en vous, arriverez-vous à la contrôler ?"
+                },
+                "remove": "L'item {{item}} a été retiré {{amount}} fois de l'inventaire de {{user}}"
+            },
+            "sailing": {
+                "invite" : "Vous êtes invité à naviguer avec {{user}} vers {{port}} !",
+                "info": "Votre {{boat}} a {{durability}} de durabilité, il se trouve à {{port}}\nIl serait prêt à naviguer dans {{time}}",
+                "edit": "Vous avez édité le bateau {{item}}!\n Il a maintenant {{durability}} de durabilité",
+                "editMax" : "Vous avez édité le bateau {{item}}!\n J'ai mis la durabilité à {{durability}} comme {{maxDurability}} est la durabilité maximale",
+                "user": {
+                    "where": "Votre {{item}} se trouve à {{port}} !",
+                    "init": "Vous avez ammaré votre {{item}} à {{port}} !"
+                }
+            },
+            "fdd": {
+                "create": "Le fruit du démon {{fdd}} a été créé !",
+                "delete": "Le fruit du démon {{fdd}} a été supprimé !",
+                "edit": "Le fruit du démon {{fdd}} a été édité !"
+            }
+        },
+        "unspecified": "La commande s'est exécutée avec succès !"
+    }
+}

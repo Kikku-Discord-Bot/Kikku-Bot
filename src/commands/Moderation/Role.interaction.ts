@@ -9,36 +9,41 @@ import { BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/struc
  */
 export class addRoleCommand extends BaseSlashCommand {
 	constructor() {
-		super("role", "Role action", [
-			{
-				name: "action",
-				description: "The action to perform",
-				required: true,
-				type: SlashCommandOptionType.STRING,
-				choices: [
-					{
-						name: "add",
-						value: "add"
-					},
-					{
-						name: "remove",
-						value: "remove"
-					}
-				]
-			},
-			{
-				name: "member",
-				description: "The member to add the role to",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "role",
-				description: "The role to add",
-				required: true,
-				type: SlashCommandOptionType.ROLE
-			}
-		], 0, true, [PermissionFlagsBits.ManageRoles]);
+		super({
+			name: "role", 
+			description: "Role action", 
+			options: [
+				{
+					name: "action",
+					description: "The action to perform",
+					required: true,
+					type: SlashCommandOptionType.STRING,
+					choices: [
+						{
+							name: "add",
+							value: "add"
+						},
+						{
+							name: "remove",
+							value: "remove"
+						}
+					]
+				},
+				{
+					name: "member",
+					description: "The member to add the role to",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "role",
+					description: "The role to add",
+					required: true,
+					type: SlashCommandOptionType.ROLE
+				}
+			],
+			permissions: [PermissionFlagsBits.ManageRoles]
+		});
 	}
 
 	/**

@@ -22,7 +22,7 @@
 			"@src/*": ["./src/*"],
 			"@events/*": ["./src/events/*"],
 			"@commands/*": ["./src/commands/*"],
-			"@modules/*": ["./src/modules/*"],
+			"@modules/*": ["modules/*"],
 		}
 	},
 	"typedocOptions": {

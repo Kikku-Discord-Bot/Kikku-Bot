@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Waifu",
+        "isActive": false
+    },
+    {
+        "name": "Game",
+        "isActive": true
+    },
+    {
+        "name": "Moderation",
+        "isActive": false
+    },
+    {
+        "name": "Ticket",
+        "isActive": false
+    },
+    {
+        "name": "Admin",
+        "isActive": true
+    }
+]

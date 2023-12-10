@@ -9,7 +9,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelEditInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpaneledit", "Edit a ticket panel");
+		super({name: "ticketpaneledit", description: "Edit a ticket panel"});
 	}
 
 	/**

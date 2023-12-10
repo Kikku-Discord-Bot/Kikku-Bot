@@ -2,6 +2,7 @@
 import { Client, REST } from "discord.js";
 import { BaseModule } from "@src/structures";
 import eventLoader from "@events/loader"
+import * as fs from "fs";
 
 /**
  * @description Base class for client
@@ -42,6 +43,23 @@ export class BaseClient extends Client {
 	 */
 	public getModules(): Map<string, BaseModule> {
 		return this.modules;
+	}
+
+	/**
+	 * @description Returns a module of the client
+	 * @param {string} name
+	 * @returns {BaseModule}
+	 * @example
+	 * // returns a module of the client
+	 * client.getModule("Game");
+	 * @throws {Error} If the module is not found
+	 * @throws {Error} If the module name is not a string
+	 */
+	public getModule(name: string): BaseModule {
+		if (typeof name !== "string") throw new Error(`The module name ${name} is not a string`);
+		const module = this.modules.get(name);
+		if (!module) throw new Error(`The module ${name} is not found`);
+		return module;
 	}
 
 	/**
@@ -108,17 +126,56 @@ export class BaseClient extends Client {
 			this.addModule(module);
 		});
 	}
-	
+
+
 	/**
 	 * @description Load the modules of the client
 	 * @returns {Promise<void>}
 	 * @example
 	 * // load the modules of the client
 	 * client.loadModules();
+	 * @throws {Error} If the module is not an instance of BaseModule
+	 * @throws {Error} If the module name is not a string
+	 * @throws {Error} If the module already exists
 	 */
-	async loadModules(): Promise<void> {
+	async loadModules(path: string, options: {name: string, isActive: boolean}[] = []): Promise<void> {
+		const modulesFiles = await fs.promises.readdir(path);
+		for (const file of modulesFiles) {
+			const lstat = await fs.promises.lstat(`${path}/${file}`);
+			if (!file.endsWith(".module.ts") || !lstat.isFile()) continue;
+			const module = await import(`${path}/${file}`);
+			try {
+				new module[Object.keys(module)[0]]();
+			} catch {
+				console.log(`The module ${file} is not an instance of BaseModule, skipping...`);
+				continue;
+			}
+			const moduleInstance = new module[Object.keys(module)[0]]();
+			if (!(moduleInstance instanceof BaseModule)) 
+				throw new Error(`The module ${moduleInstance} is not an instance of BaseModule`);
+			if (this.modules.has(moduleInstance.getName()))
+				throw new Error(`The module ${moduleInstance.getName()} already exists`);
+			const option = options.find((option) => option.name === moduleInstance.getName());
+			if (option && option.isActive === false) {
+				console.log(`The module ${moduleInstance.getName()} is not active, skipping...`);
+				continue
+			}
+			console.log(`Module ${moduleInstance.getName()} added`);
+			this.modules.set(moduleInstance.getName(), moduleInstance);
+		}
+	}
+
+	
+	/**
+	 * @description Load the commands of the modules of the client
+	 * @returns {Promise<void>}
+	 * @example
+	 * // load the commands of the  modules of the client
+	 * client.loadModules();
+	 */
+	async loadModulesCommands(): Promise<void> {
 		let restSlashCommands = await this.baseRest.get(
-			`/applications/${this.clientId}/commands`,
+			`/applications/${this.clientId}/commands?with_localizations=true`,
 		) as any[];
 		let hasChanged = false;
 		const registeredSlashCommand = [];
@@ -130,7 +187,7 @@ export class BaseClient extends Client {
 			if (hasChanged) {
 				//console.log(restSlashCommands);
 				restSlashCommands = await this.baseRest.get(
-					`/applications/${this.clientId}/commands`,
+					`/applications/${this.clientId}/commands?with_localizations=true`,
 				) as any[];
 			}
 
@@ -155,7 +212,7 @@ export class BaseClient extends Client {
 		}
 		
 	}
-
+	
 	/**
 	 * @description Load the events of the client
 	 * @returns {Promise<void>}

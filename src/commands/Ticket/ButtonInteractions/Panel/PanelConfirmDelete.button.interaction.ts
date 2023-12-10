@@ -11,7 +11,7 @@ import { Exception } from "@src/structures/exception/exception.class";
  */
 export class PanelConfirmDeleteInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketpanelconfirmdelete", "Delete a ticket panel");
+		super({name: "ticketpanelconfirmdelete", description: "Delete a ticket panel"});
 	}
 
 	/**

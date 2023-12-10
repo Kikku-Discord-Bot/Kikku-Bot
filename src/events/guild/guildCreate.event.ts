@@ -1,7 +1,6 @@
 import { Guild, Events } from "discord.js";
 import { BaseEvent, BaseClient } from "@src/structures";
-import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
-import { UserHandler } from "@src/structures/database/handler/user.handler.class";
+import { GuildHandler, UserHandler } from "kikku-database-middleware";
 
 
 /**
