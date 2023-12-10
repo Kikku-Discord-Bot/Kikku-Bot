@@ -66,7 +66,7 @@ async function main() {
 		await baseClient.loadEvents();
 		Logger.log(LoggerTypeEnum.INFO, "Bot is ready!");
 		await baseClient.run(process.env.DISCORD_BOT_TOKEN);
-	}).catch((err) => {
+	}).catch((err: any) => {
 		console.error(err);
 	});
 }

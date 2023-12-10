@@ -10,7 +10,7 @@ module.exports = {
     rules: {
         "indent": ["error", "tab"],
         "quotes": ["error", "double"],
-        "no-explicit-any": "off",
+        "no-explicit-any": "on",
     },
     ignorePatterns: ['node_modules/', 'coverage/', 'docs/'],
   };
