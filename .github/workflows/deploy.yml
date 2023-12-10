@@ -16,7 +16,7 @@ jobs:
         with:
           local: ./
           remote: Kikku-Bot
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SSH_IP }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.PASSWORD }}
 
