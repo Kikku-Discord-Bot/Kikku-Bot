@@ -1,6 +1,6 @@
 import { BaseClient, BaseEvent } from "@src/structures";
 import { GuildMember, Events } from "discord.js";
-import { GuildHandler } from "@src/structures/database/handler/guild.handler.class";
+import { GuildHandler } from "kikku-database-middleware";
 
 /**
  * @description Event for when a member leave a guild

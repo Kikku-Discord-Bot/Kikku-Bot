@@ -4,13 +4,21 @@ import { TextChannel } from "discord.js";
 import fs from "fs";
 import path from "path";
 
-export class LoggerEnum {
+export class LoggerFileEnum {
 	static INFO = "info";
 	static DEBUG = "debug";
 	static ERROR = "error";
 	static USER = "user";
 	static BOAT = "boat";
 	static FDD = "fdd";
+}
+
+export class LoggerTypeEnum {
+	static INFO = "info";
+	static DEBUG = "debug";
+	static WARN = "warn";
+	static ERROR = "error";
+	static FATAL_ERROR = "fatal_error";
 }
 
 /*
@@ -42,7 +50,7 @@ export class Logger {
      * // => [2021-01-01 00:00:00] [ERROR] Hello world!
      */
 
-	static async log(message: string, type?: string, toFile = true, client: BaseClient | undefined = undefined): Promise<void> {
+	static async log( type: string, message: string, toFile = true, file?: string, client: BaseClient | undefined = undefined): Promise<void> {
 		const date  = new Date();
 		const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
 		const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
@@ -54,18 +62,43 @@ export class Logger {
 		const dateString = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 		if (type) message = `[${dateString}] [${type.toUpperCase()}] ${message}`;
 		if (client) {
-			if (type === LoggerEnum.INFO || type === LoggerEnum.ERROR) {
+			if (type != LoggerTypeEnum.DEBUG) {
 				const channel = client.channels.cache.get(await Logger.logChannelId)
 				if (channel && channel instanceof TextChannel) {
 					await channel.send(message);
 				}
 			}
 		}
-		else message = `[${dateString}] [LOG] ${message}`;
 		console.log(`${message}`);
 
 		if (toFile)
-			this.logToFile(message, type);
+			this.logToFile(message, file);
+	}
+
+	static async debug(message: string, toFile = true, file?: string, client: BaseClient | undefined = undefined): Promise<void> {
+		const type = LoggerTypeEnum.DEBUG;
+		const date  = new Date();
+		const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+		const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+		const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
+		const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+		const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+		const year = date.getFullYear();
+
+		const dateString = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+		if (type) message = `[${dateString}] [${type.toUpperCase()}] ${message}`;
+		if (client) {
+			if (type != LoggerTypeEnum.DEBUG) {
+				const channel = client.channels.cache.get(await Logger.logChannelId)
+				if (channel && channel instanceof TextChannel) {
+					await channel.send(message);
+				}
+			}
+		}
+		console.log(`${message}`);
+
+		if (toFile)
+			this.logToFile(message, file);
 	}
 
 	/**
@@ -81,9 +114,9 @@ export class Logger {
      * await Logger.logToFile("Hello world!", "debug");
      * // => [2021-01-01 00:00:00] [DEBUG] Hello world!
      */
-	static logToFile(message: string, type?: string): void {
+	static logToFile(message: string, file?: string): void {
 		let filePath = path.join(Logger.pathToLog, Logger.infoFile);
-		if (type) filePath = path.join(Logger.pathToLog, `${type}.log`)
+		if (file) filePath = path.join(Logger.pathToLog, `${file}.log`)
 		const dir = path.join(Logger.pathToLog);
 
 		if (!fs.existsSync(dir)) {

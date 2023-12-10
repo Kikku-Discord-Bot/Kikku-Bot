@@ -5,9 +5,8 @@ import { Locale, Routes } from "discord.js";
 import fs from "fs";
 import { Exception } from "../exception/exception.class";
 import { type } from "os";
-import { DBConnection } from "../database/dbConnection.db.class";
 import Module from "module";
-import { DatabaseModuleHandler, DatabaseSchemaName } from "../database/ModuleHandler.class";
+import { GuildHandler } from "kikku-database-middleware";
 
 interface DatabaseFieldSchema {
 	name: string;
@@ -57,7 +56,6 @@ export abstract class BaseModule {
 	private aliases: Map<string, BaseCommand> = new Map();
 	private enabled: boolean;
 	private description: string;
-	private databaseHandler: DatabaseModuleHandler;
 	// May need to change this to a Collection<string, BaseCommand> if we want to add more properties to the commands same goes the aliases
 	// private commands: Collection<string, BaseCommand> = new Collection();
 	private commands: Map<string, BaseCommand> = new Map();
@@ -68,12 +66,10 @@ export abstract class BaseModule {
 	 * @param name 
 	 * @param isEnabled 
 	 */
-	constructor(name: string, description?: string, isEnabled?: boolean, databaseSchemas?: DatabaseSchemas ) {
+	constructor(name: string, description?: string, isEnabled?: boolean) {
 		this.name = name;
 		this.description = description || "No description provided";
 		this.enabled = isEnabled || true;
-		this.databaseSchemas = databaseSchemas;
-		this.databaseHandler = new DatabaseModuleHandler(this.name);
 	}
 
 	/**
@@ -104,15 +100,6 @@ export abstract class BaseModule {
 		return this.description;
 	}
 
-
-	/**
-	 * @description Returns the database handler of the module
-	 * @returns {DatabaseModuleHandler}
-	 */
-	public getDatabaseHandler(): DatabaseModuleHandler {
-		return this.databaseHandler;
-	}
-
 	/**
 	 * @description Returns the active status of the module
 	 * @returns {boolean}
@@ -122,6 +109,20 @@ export abstract class BaseModule {
 	 */
 	public isEnabled(): boolean {
 		return this.enabled;
+	}
+
+	/**
+	 * @description Returns the active status of the module for the guild
+	 * @param {string} guildId
+	 * @returns {boolean}
+	 * @example
+	 * // returns Promise<true>
+	 * module.isGuildEnabled();
+	 */
+	public async isGuildEnabled(guildId: string): Promise<boolean> {
+		const guildHandler = await GuildHandler.getGuildById(guildId);
+		if (!guildHandler) return false;
+		return guildHandler.getModuleState(this.name);
 	}
 
 	/**
@@ -171,70 +172,6 @@ export abstract class BaseModule {
 		if (this.aliases.has(name)) return this.aliases.get(name);
 		return undefined;
 	}
-
-
-	/**
-	 * @description Returns the database schemas of the module
-	 * @returns {DatabaseSchemas | undefined}
-	 * @example
-	 * // returns { globalSchema: { fields: [ [Object] ] } }
-	 */
-	public getDatabaseSchemas(): DatabaseSchemas | undefined {
-		return this.databaseSchemas;
-	}
-
-
-	/**
-	 * @description Loads module database schemas into the database
-	 * @param {Sequelize.Sequelize} database
-	 * @example
-	 * // loads module database schemas into the database
-	 * module.loadDatabaseSchemas(database);
-	 * @example
-	 */
-	async loadDatabaseSchemas() {
-		const database = DBConnection.getInstance().sequelize;
-		if (!this.databaseSchemas) return;
-		const schemas = Object.entries(this.databaseSchemas);
-		for (const [schemaName, schema] of schemas) {
-			if (schema.enabled === false) continue;
-			const schemaOptions = {
-				timestamps: schema.timestamps,
-				createdAt: schema.createdAt,
-				updatedAt: schema.updatedAt,
-			}
-
-			const schemaFields: any = {};
-			for (const field of schema.fields) {
-				schemaFields[field.name] = {
-					type: field.type,
-					allowNull: field.allowNull ? field.allowNull : false,
-				}
-
-				if (field.defaultValue !== undefined) {
-					schemaFields[field.name].defaultValue = field.defaultValue;
-				}
-			}
-			if (schemaName === "user") {
-				schemaFields["userId"] = {
-					type: Sequelize.DataTypes.STRING,
-					allowNull: false,
-				}
-			}
-
-			if (schemaName === "guild") {
-				schemaFields["guildId"] = {
-					type: Sequelize.DataTypes.STRING,
-					allowNull: false,
-				}
-			}
-			const realSchemaName = this.databaseHandler.getSchemaName(schemaName);
-			const schemaModel = database.define(realSchemaName + "_" + this.getName(), schemaFields, schemaOptions);
-			this.databaseHandler.setSchema(realSchemaName, schemaModel);
-			await schemaModel.sync();
-		}
-	}
-
 
 	/**
 	 * @description Loads commands into the module
@@ -324,7 +261,7 @@ export abstract class BaseModule {
 				continue;
 			}
 			this.printChangement(statusIsChanged);
-			//toRegister.push(interaction.getSlashCommand().toJSON());
+			toRegister.push(interaction.getSlashCommand().toJSON());
 		}
 		
 		if (toRegister.length === 0) {

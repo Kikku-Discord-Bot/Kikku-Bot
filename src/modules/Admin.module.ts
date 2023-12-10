@@ -1,8 +1,8 @@
 import { BaseModule } from "@src/structures";
 import * as Sequelize from "sequelize";
 
-export class GameModule extends BaseModule {
+export class AdminModule extends BaseModule {
 	constructor() {
-		super("Game", "1.0.0", true);
+		super("Admin", "0.2.0", true);
 	}
 }

@@ -1,10 +1,9 @@
 import { Message, EmbedBuilder, TextChannel, ChannelType, ColorResolvable, Colors, CategoryChannelResolvable, OverwriteResolvable, ButtonInteraction } from "discord.js";
 import { ChatInputCommandInteraction } from "discord.js";
 import { Ticket } from "./ticket.class"
-import { TicketHandler } from "@src/structures/database/handler/ticket.handler.class";
-import { PanelTicketHandler } from "../database/handler/panelTicket.handler.class";
+import { TicketHandler, PanelTicketHandler} from "kikku-database-middleware";
 
-interface EmbebError {
+interface EmbedError {
     title: string;
     description: string;
     color: ColorResolvable;
@@ -233,7 +232,7 @@ export class TicketManager {
      * @param {EmbebError} options
      * @returns {EmbedBuilder}
      */
-	private buildEmbedError(message: Message | ChatInputCommandInteraction, options: EmbebError): EmbedBuilder {
+	private buildEmbedError(message: Message | ChatInputCommandInteraction, options: EmbedError): EmbedBuilder {
 		let username = "";
 		if (message instanceof ChatInputCommandInteraction)
 			username = message.user.username;

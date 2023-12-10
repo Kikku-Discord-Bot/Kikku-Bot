@@ -1,5 +1,4 @@
-# Deployment of Kikku on SSH server
-name: Deploy release to VPS
+name: push_prod
 
 on:
   push:
@@ -7,47 +6,30 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Deploy to SSH server
-    steps:
-      - name: git-checkout
-        uses: actions/checkout@v3
 
-      - name: Install all dependencies
-        run: npm install
-
-      - name: Cache build
-        uses: actions/cache@v2
-        with:
-          path: .
-          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
-      - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u TrueBabyChaise --password-stdin
-
-      - name: Build docker image
-        run: docker build -t ghcr.io/truebabychaise/kikku .
-
-      - name: Push the client image to GitHub Container Registry
-        run: docker push ghcr.io/truebabychaise/kikku:latest
-
-  restart:
-    needs:
-      - build
+  Push:
     runs-on: ubuntu-latest
     steps:
-      - name: VPS deploy
-        uses: appleboy/ssh-action@master
+      - uses: actions/checkout@v4
+      - name: Copy folder content recursively to vm
+        uses: garygrossgarten/github-action-scp@release
         with:
-          host: ${{ secrets.SSH_IP }}
+          local: ./
+          remote: Kikku-Bot
+          host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
-          script: |
-            echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u TrueBabyChaise --password-stdin
-            docker compose down
-            docker image rm ghcr.io/truebabychaise/kikku:latest
-            docker pull ghcr.io/truebabychaise/kikku:latest
-            docker compose up -d
+          password: ${{ secrets.PASSWORD }}
+
+  build:
+    name: Run
+    needs: Push
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASS }}
+        port: ${{ secrets.PORT }}
+        script: docker compose up -d --build bot db
