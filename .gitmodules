@@ -1,0 +1,3 @@
+[submodule "Kikku-Database-Middleware"]
+	path = Kikku-Database-Middleware
+	url = https://github.com/Kikku-Discord-Bot/Kikku-Database-Middleware.git
