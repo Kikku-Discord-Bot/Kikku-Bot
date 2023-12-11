@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember, Role, PermissionFlagsBits} from "discord.js";
-import { BaseCommand, BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/structures";
+import { BaseClient, BaseSlashCommand, SlashCommandOptionType } from "@src/structures";
 
 /**
  * @description SetRole command
@@ -9,36 +9,41 @@ import { BaseCommand, BaseClient, BaseSlashCommand, SlashCommandOptionType } fro
  */
 export class addRoleCommand extends BaseSlashCommand {
 	constructor() {
-		super("role", "Role action", [
-			{
-				name: "action",
-				description: "The action to perform",
-				required: true,
-				type: SlashCommandOptionType.STRING,
-				choices: [
-					{
-						name: "add",
-						value: "add"
-					},
-					{
-						name: "remove",
-						value: "remove"
-					}
-				]
-			},
-			{
-				name: "member",
-				description: "The member to add the role to",
-				required: true,
-				type: SlashCommandOptionType.USER
-			},
-			{
-				name: "role",
-				description: "The role to add",
-				required: true,
-				type: SlashCommandOptionType.ROLE
-			}
-		], 0, true, [PermissionFlagsBits.ManageRoles]);
+		super({
+			name: "role", 
+			description: "Role action", 
+			options: [
+				{
+					name: "action",
+					description: "The action to perform",
+					required: true,
+					type: SlashCommandOptionType.STRING,
+					choices: [
+						{
+							name: "add",
+							value: "add"
+						},
+						{
+							name: "remove",
+							value: "remove"
+						}
+					]
+				},
+				{
+					name: "member",
+					description: "The member to add the role to",
+					required: true,
+					type: SlashCommandOptionType.USER
+				},
+				{
+					name: "role",
+					description: "The role to add",
+					required: true,
+					type: SlashCommandOptionType.ROLE
+				}
+			],
+			permissions: [PermissionFlagsBits.ManageRoles]
+		});
 	}
 
 	/**
@@ -54,22 +59,19 @@ export class addRoleCommand extends BaseSlashCommand {
 		const actionOption = interaction.options.get("action");
 
 		if (!memberOption || !roleOption || !actionOption) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member, role or action option is null");
 		}
 
 		const member = memberOption.member;
 		const role = roleOption.role;
 		const action = actionOption.value as string;
 
-		if (!member || !role || !interaction.guild || !action) {
-			await interaction.reply("Something went wrong!");
-			return;
+		if (!member || !role || !action) {
+			throw new Error("Member, role or action is null");
 		}
 
 		if (!(member instanceof GuildMember) || !(role instanceof Role)) {
-			await interaction.reply("Something went wrong!");
-			return;
+			throw new Error("Member or role is not a GuildMember or Role");
 		}
 
 		if (action === "remove") {

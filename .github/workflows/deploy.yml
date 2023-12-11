@@ -1,0 +1,35 @@
+name: push_prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  Push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy folder content recursively to vm
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: ./
+          remote: Kikku-Bot
+          host: ${{ secrets.SSH_IP }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+
+  build:
+    name: Run
+    needs: Push
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASS }}
+        port: ${{ secrets.PORT }}
+        script: docker compose up -d --build bot db

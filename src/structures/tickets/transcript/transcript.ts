@@ -68,17 +68,16 @@ function messageHtmlCreator(message: Message) {
 				else
 					toAdd += `<div class='chatInput'><a href='${message.content}'>${message.content}</a></div>`; 
 			else
-			if (message.content.startsWith("```"))
-				toAdd += `<div class="code">${messageContentCodeBlock(message.content)}</div>`;
-			else
-				toAdd += `<div class='chatInput'>${message.content}</div>`;
+				if (message.content.startsWith("```"))
+					toAdd += `<div class="code">${messageContentCodeBlock(message.content)}</div>`;
+				else
+					toAdd += `<div class='chatInput'>${message.content}</div>`;
 		}
 	}
 	return toAdd;
 }
 
 export default async function buildTranscript(guildId: string, client: BaseClient, channel: TextChannel) {
-	const guild = client.guilds.cache.get(guildId);
 	const messages = (await channel.messages.fetch({ cache: true })).reverse();
 
 	let transcript = "<body>";

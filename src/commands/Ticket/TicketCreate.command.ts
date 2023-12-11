@@ -1,6 +1,7 @@
 import { TicketManager } from "@src/structures/tickets/ticketManager.class";
 import { BaseCommand, BaseClient} from "@src/structures";
 import { Message } from "discord.js";
+import { Logger } from "@src/structures/logger/logger.class";
 
 /**
  * @description TicketCreate command
@@ -9,7 +10,11 @@ import { Message } from "discord.js";
  */
 export class TicketCreateCommand extends BaseCommand {
 	constructor() {
-		super("ticketcreate", ["tc"], "Create a ticket", "Tickets", 0, true, []);
+		super({
+			name: "ticketcreate", 
+			aliases: ["tc"], 
+			description: "Create a ticket",
+		});
 	}
 
 	/**
@@ -20,11 +25,10 @@ export class TicketCreateCommand extends BaseCommand {
      * @returns {Promise<void>}
      */
 
-	async execute(client: BaseClient, message: Message, args: string[]): Promise<void> {
-		await TicketManager.getInstance().createTicket(message, client);
+	async execute(client: BaseClient, message: Message): Promise<void> {
+		await TicketManager.getInstance().createTicket(message);
 
 		if (message.guild)
-			console.log(TicketManager.getInstance().getTicket(message.guild.id));
+			Logger.log(`Ticket created in ${message.guild.name} by ${message.author.tag}`);
 	}
-
 }

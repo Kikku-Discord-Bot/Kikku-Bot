@@ -1,6 +1,6 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, Interaction } from "discord.js";
-import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
+import { ButtonInteraction, EmbedBuilder, Colors } from "discord.js";
+import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
 
 /**
  * @description TicketOpen button interaction
@@ -9,7 +9,7 @@ import { PanelTicketEnum, PanelTicketHandler } from "@src/structures/database/ha
  */
 export class PanelRefreshInteraction extends BaseInteraction {
 	constructor() {
-		super("ticketrefreshpanel", "Refresh a ticket panel");
+		super({name: "ticketrefreshpanel", description: "Refresh a ticket panel"});
 	}
 
 	/**
@@ -22,13 +22,11 @@ export class PanelRefreshInteraction extends BaseInteraction {
 		const message = interaction.message;
 
 		if (interaction.message.embeds.length == 0) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is invalid, Can't refresh it");
 		}
 
 		if (interaction.message.embeds[0].footer == null || interaction.message.embeds[0].footer.text == undefined) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is invalid, Can't refresh it");
 		}
 		const panelTicket = await PanelTicketHandler.getPanelTicketById(interaction.message.embeds[0].footer.text);
 		if (!panelTicket) {
@@ -38,8 +36,7 @@ export class PanelRefreshInteraction extends BaseInteraction {
 		}
 
 		if (client.user == null) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Client user is null");
 		}
 
 		const botUrl = client.user.avatarURL() || "";

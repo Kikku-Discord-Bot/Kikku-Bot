@@ -1,6 +1,6 @@
 import { BaseClient, BaseInteraction } from "@src/structures";
 import { PanelTicketHandler } from "@src/structures/database/handler/panelTicket.handler.class";
-import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuInteraction} from "discord.js";
+import { EmbedBuilder, RoleSelectMenuInteraction} from "discord.js";
 
 /**
  * @description TicketOpen button interaction
@@ -9,7 +9,7 @@ import { ButtonInteraction, EmbedBuilder, Colors, ActionRowBuilder , ButtonBuild
  */
 export class PanelChangeRoleInteraction extends BaseInteraction {
 	constructor() {
-		super("panelrole", "Change the role for the ticket panel");
+		super({name: "panelrole", description: "Change the role for the ticket panel"});
 	}
 
 	/**
@@ -22,30 +22,26 @@ export class PanelChangeRoleInteraction extends BaseInteraction {
 		const message = interaction.message;
 
 		if (!message) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Message is null");
 		}
 
 		const newRoles = interaction.values;
 
 		const secondEmbed = message.embeds[1];
 		if (!secondEmbed || !secondEmbed.title) {
-			await interaction.reply({ content: "Something went wrong", ephemeral: true });
-			return;
+			throw new Error("Embed is null");
 		}
 
 		let stringListRoles = "No role(s) selected";
 		if (newRoles && newRoles.length >= 1) {
 			stringListRoles = newRoles.map((role) => `<@&${role}>\n`).join(" ");
 			if (!interaction.guild) {
-				await interaction.reply({ content: "Something went wrong", ephemeral: true });
-				return;
+				throw new Error("Guild is null");
 			}
 			PanelTicketHandler.getPanelTicketByUserAndGuild(interaction.user.id, interaction.guild.id).then((panelTicket) => {
 				if (panelTicket) {
 					if (!panelTicket.updatePanelTicketRoles(newRoles)) {
-						interaction.reply({ content: "Something went wrong", ephemeral: true });
-						return;
+						throw new Error("An error occurred while updating your panel ticket");
 					}
 				}
 			});
