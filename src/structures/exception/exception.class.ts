@@ -18,12 +18,11 @@ export class Exception extends Error {
 		this.name = this.constructor.name;
 		this.user = user;
 
-		Logger.log(this.messageToString(this.message), LoggerTypeEnum.ERROR, true);
+		Logger.log(LoggerTypeEnum.ERROR, this.messageToString(this.message), true);
 		console.log(this.stack);
 	}
 
 	public static getErrorMessageLogFormat(message: string, stack: any, user: { id: string, name: string } | null = null): string {
-		console
 		const stackSplit = stack.split("\n");
 		let firstStack = "";
 		if (stackSplit)
@@ -35,8 +34,10 @@ export class Exception extends Error {
 	public messageToString(message?: string): string {
 		const stackSplit = this.stack?.split("\n");
 		let firstStack = "";
-		if (stackSplit)
+		if (stackSplit && stackSplit.length > 2)
 			firstStack = stackSplit[2].trim();
+		else
+			firstStack = this.stack ? this.stack : "No stack";
 		if (this.user) return `${this.name} for user ${this.user.name}(${this.user.id}) in ${firstStack}: ${message ? message : this.message}`;
 		return `${this.name} in file ${firstStack}: ${message ? message : this.message}`;
 	}

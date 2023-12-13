@@ -7,6 +7,7 @@ import { Exception } from "../exception/exception.class";
 import { type } from "os";
 import Module from "module";
 import { GuildHandler } from "kikku-database-middleware";
+import { Logger, LoggerTypeEnum } from "../logger/logger.class";
 
 interface DatabaseFieldSchema {
 	name: string;
@@ -192,9 +193,13 @@ export abstract class BaseModule {
 			if (!file.endsWith("command.ts")) continue;
 			const Command = (await import(`${path}/${file}`));
 			for (const kVal in Object.keys(Command)) {
-				const value = Object.values(Command)[kVal];
+				const value = Object.values(Command)[kVal] as any;
+				if (Object.keys(value).length === 0 && value.constructor === Object) {
+					Logger.log(LoggerTypeEnum.WARN, `${path}/${file} is probably empty or not a valid class or not exported. Skipping...`)
+					continue;
+				}
 				try {
-					const command = new (value as any)();
+					const command = new value();
 					this.commands.set(command.name, command);
 					if (!command.aliases) continue;
 					for (const alias of command.aliases) {
@@ -202,7 +207,7 @@ export abstract class BaseModule {
 					}
 				} catch (error: unknown) {
 					if (error instanceof Error)
-						throw new Exception(error.message)
+						Logger.log(LoggerTypeEnum.ERROR, `Could not load command ${path}/${file}: ${error.message}`);
 				}
 			}
 		}

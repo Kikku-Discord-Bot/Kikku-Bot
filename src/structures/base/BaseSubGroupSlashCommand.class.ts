@@ -1,6 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SlashCommandBuilder, ApplicationCommandOptionType, APIApplicationCommandOptionChoice, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
+import { SlashCommandBuilder, ApplicationCommandOptionType, APIApplicationCommandOptionChoice, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, LocalizationMap } from "discord.js";
 import { BaseInteraction, SlashCommandOptionType, BaseSlashCommandOptions, BaseSubSlashCommand, SlashCommandOptions, BaseSlashCommand } from "@src/structures";
+
+export interface BaseSlashGroupCommandOptions {
+	name: string;
+	description: string;
+	nameLocalisation?: LocalizationMap,
+	descriptionLocalisation?: LocalizationMap
+	options?: SlashCommandOptions[];
+	subCommands?: BaseSubSlashCommand[];
+	cooldown?: number;
+	isEnabled?: boolean;
+	permissions?: bigint[];
+	dmAllowed?: boolean;
+}
 
 /**
  * @description Base class for sub slash commands
@@ -9,7 +22,7 @@ import { BaseInteraction, SlashCommandOptionType, BaseSlashCommandOptions, BaseS
 export abstract class BaseSubGroupSlashCommand extends BaseSlashCommand {
 	private subGroup: SlashCommandSubcommandGroupBuilder;
 
-	constructor({ name, description, options, subCommands, cooldown, isEnabled, permissions, dmAllowed }: BaseSlashCommandOptions) {
+	constructor({ name, description, options, subCommands, cooldown, isEnabled, permissions, dmAllowed }: BaseSlashGroupCommandOptions) {
 		super({ name, description, options, subCommands, cooldown, isEnabled, permissions, dmAllowed })
 		this.subGroup = new SlashCommandSubcommandGroupBuilder()
 			.setName(this.getName())
